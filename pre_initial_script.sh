@@ -10,9 +10,9 @@ REPO_SSH="git@github.com:Playtronica/biotron-test-jig-software.git"
 
 git clone ${REPO_SSH}
 
-cp ~/${REPO_NAME}/initial_script.sh ~/
-cp ~/${REPO_NAME}/auto_update.service /etc/systemd/system
+sudo cp ./${REPO_NAME}/initial_script.sh ./
+sudo cp ./${REPO_NAME}/auto_update.service /etc/systemd/system
 
-systemctl daemon-reload
-systemctl enable auto_update.service
-systemctl start auto_update.service
+sudo systemctl daemon-reload
+sudo systemctl enable auto_update.service
+sudo systemctl start auto_update.service
