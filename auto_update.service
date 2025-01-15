@@ -1,0 +1,8 @@
+[Unit]
+Description=Auto update biotron and jig firmware
+
+[Service]
+ExecStart=/bin/bash ~/initial_script.sh
+
+[Install]
+WantedBy=multi-user.target
