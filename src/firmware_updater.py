@@ -7,7 +7,7 @@ firmware_logger = get_logger_child('firmware_updater')
 headers = {
     "Accept": "application/vnd.github+json",
     "X-GitHub-Api-Version": "2022-11-28",
-    "Authorization": f"Bearer {variables.GITHUB_TOKEN}"
+    # "Authorization": f"Bearer {variables.GITHUB_TOKEN}"
 }
 
 
