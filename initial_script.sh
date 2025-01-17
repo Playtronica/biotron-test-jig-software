@@ -9,6 +9,12 @@ if [ ! -d "${REPO_NAME}" ]; then
 fi
 
 cd ${REPO_NAME} || exit
+
+if [ ! -d ".venv" ]; then
+  python3 -m venv .venv
+fi
+. .venv/bin/activate
+
 git pull
 
 pip install -r requirements.txt
