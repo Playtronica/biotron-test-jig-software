@@ -24,6 +24,7 @@ class JigEnvironment:
         self.test_count = 0  # Счетчик протестированных устройств
         self.debounce_time = 0.05  # 50 миллисекунд для защиты от дребезга
         self.debounce_check_count = 2
+        self.current_pin_state = 0
 
         self.last_pin_state = self.pins.gpio_read_pin(0)  # Начальное состояние пина
 
