@@ -1,7 +1,7 @@
 import gpiozero
 from gpiozero import Button
 import time
-from tca9535 import TCA9535
+from .tca9535 import TCA9535
 
 class PinController:
     _instance = None
