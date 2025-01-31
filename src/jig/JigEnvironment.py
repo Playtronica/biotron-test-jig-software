@@ -1,9 +1,10 @@
 # TODO Was renamed from TestSystem, cut from whole code, and was made like singleton
 import time
+
 import variables
 from base_logger import get_logger_for_file
 
-from jig_hardware_control.pin_controller import PinController
+from .jig_hardware_control.pin_controller import PinController
 
 logger = get_logger_for_file(__name__)
 
