@@ -6,6 +6,10 @@ load_dotenv()
 
 ROOT_PATH = Path(__file__).parent.parent
 FIRMWARE_PATH = ROOT_PATH / "firmware"
-LOGGER_PATH = ROOT_PATH / "logs"
+os.makedirs(FIRMWARE_PATH, exist_ok=True)
 
-GITHUB_TOKEN = os.getenv('GITHUB_TOKEN')
+LOGGER_PATH = ROOT_PATH / "logs"
+os.makedirs(LOGGER_PATH, exist_ok=True)
+
+MAX_TEST_TIME = 70
+

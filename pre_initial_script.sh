@@ -2,7 +2,7 @@
 
 sudo apt install git
 ssh-keygen -q -t rsa -N '' -f ~/.ssh/id_rsa <<<y >/dev/null 2>&1
-cat  ~/.ssh/id_rsa.pub
+@
 read -r -n 1 -p "Please enter this public ssh key to github repository. After press Enter" _
 
 REPO_NAME="biotron-test-jig-software"
