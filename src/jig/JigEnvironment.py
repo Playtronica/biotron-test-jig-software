@@ -73,7 +73,7 @@ class JigEnvironment:
             self.__device_disconnected()
 
     def __is_pin_status_changed(self):
-        print(f"Current pin state: {self.current_pin_state}")
+        logger.debug(f"Current pin state: {self.current_pin_state}")
 
         for checks in range(self.debounce_check_count):
             self.current_pin_state = self.pins.gpio_read_pin(0)
@@ -83,17 +83,17 @@ class JigEnvironment:
                 logger.debug("Device status has not changed")
                 return False
             if checks == 0:
-                logger.debug(
+                logger.info(
                     f"Pin state changed from {self.last_pin_state} to {self.current_pin_state}."
                     f" Waiting for debounce time..."
                 )
             time.sleep(self.debounce_time)
 
-        logger.debug("Debounce check finished successfully")
-        logger.debug(f"Pin state after debounce: {self.current_pin_state}")
+        logger.info("Debounce check finished successfully")
+        logger.info(f"Pin state after debounce: {self.current_pin_state}")
 
         self.last_pin_state = self.current_pin_state
-        logger.debug(f"Last pin state updated to: {self.last_pin_state}")
+        logger.info(f"Last pin state updated to: {self.last_pin_state}")
         return True
 
     def __device_connected(self):
