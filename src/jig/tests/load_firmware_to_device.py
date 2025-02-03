@@ -19,7 +19,7 @@ def get_firmware_file():
 
     firmware_file = None
 
-    files = [f for f in os.listdir() if os.path.isdir(variables.FIRMWARE_PATH)]
+    files = [f for f in os.listdir(variables.FIRMWARE_PATH) if os.path.isfile(os.path.join(variables.FIRMWARE_PATH, f))]
     if not files:
         logger.warn("Don't see any firmware files")
         return None
