@@ -7,8 +7,8 @@ import variables
 from base_logger import get_logger_for_file
 
 
-
 logger = get_logger_for_file(__name__)
+
 
 firmware_file = None
 def get_firmware_file():
@@ -23,7 +23,8 @@ def get_firmware_file():
         logger.warn("Don't see any firmware files")
         return None
 
-    file = files.sort()[-1]
+    files.sort()
+    file = files[-1]
     if not file.endswith(".uf2"):
         logger.warn("File from firmware dir is not firmware")
         return None
