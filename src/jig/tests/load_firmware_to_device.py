@@ -46,7 +46,7 @@ def mount_usb_drive(drive_name):
     os.makedirs(variables.MOUNT_POINT, exist_ok=True)
     try:
         subprocess.run(['sudo', 'mount', f'/dev/{drive_name}', variables.MOUNT_POINT], check=True)
-        logger.debug(f"Mounted /dev/{drive_name} at {variables.MOUNT_POINT}")
+        logger.info(f"Mounted /dev/{drive_name} at {variables.MOUNT_POINT}")
     except subprocess.CalledProcessError as e:
         logger.warn(f"Failed to mount /dev/{drive_name}: {e}")
 
@@ -54,7 +54,7 @@ def mount_usb_drive(drive_name):
 def unmount_usb_drive():
     try:
         subprocess.run(['sudo', 'umount', variables.MOUNT_POINT], check=True)
-        logger.debug(f"Umounted {variables.MOUNT_POINT}")
+        logger.info(f"Umounted {variables.MOUNT_POINT}")
     except subprocess.CalledProcessError as e:
         logger.warn(f"Failed to unmount {variables.MOUNT_POINT}: {e}")
 
@@ -70,7 +70,7 @@ def copy_firmware_to_usb_drive(source_file):
     destination = os.path.join(variables.MOUNT_POINT, os.path.basename(source_file))
     try:
         shutil.copy2(source_file, destination)  # Copy the file
-        logger.debug(f"File '{source_file}' has been copied to device.")
+        logger.info(f"File '{source_file}' has been copied to device.")
         return True
     except Exception as e:
         logger.warn(f"Failed to copy to device: {e}")
@@ -84,14 +84,14 @@ def load_firmware_to_device():
         return None
 
     if check_mounted_drives():
-        logger.debug("Mounted drive has been detected")
+        logger.info("Mounted drive has been detected")
     else:
-        logger.debug("Mounted drive has not been detected.")
+        logger.info("Mounted drive has not been detected.")
 
         unmounted_drive = list_unmounted_drives()
 
         if unmounted_drive:
-            logger.debug("Unmounted USB drives detected")
+            logger.info("Unmounted USB drives detected")
             mount_usb_drive(unmounted_drive)
         else:
             logger.warn("No unmounted USB drives found.")
