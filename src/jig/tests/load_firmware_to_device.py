@@ -14,6 +14,7 @@ firmware_file = None
 def get_firmware_file():
     global firmware_file
     if firmware_file and firmware_file.is_file():
+        logger.info(f"Use old firmware file {firmware_file}")
         return firmware_file
 
     firmware_file = None
@@ -26,10 +27,11 @@ def get_firmware_file():
     files.sort()
     file = files[-1]
     if not file.endswith(".uf2"):
-        logger.warn("File from firmware dir is not firmware")
+        logger.warn(f"File from firmware dir is not firmware. {file}")
         return None
 
     firmware_file = variables.FIRMWARE_PATH / file
+    logger.info(f"Firmware file has been found. {file}")
     return firmware_file
 
 
