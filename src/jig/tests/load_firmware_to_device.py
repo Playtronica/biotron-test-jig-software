@@ -6,6 +6,8 @@ import subprocess
 import variables
 from base_logger import get_logger_for_file
 
+
+
 logger = get_logger_for_file(__name__)
 
 firmware_file = None

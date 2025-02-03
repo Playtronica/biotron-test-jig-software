@@ -1,3 +1,5 @@
+import gpiozero
+from gpiozero import Button
 import time
 from .tca9535 import TCA9535
 
@@ -8,7 +10,7 @@ class PinController:
     _instance = None
     def __init__(self):
         # Initialize the TCA9535 expander
-        self.tca95R35 = TCA9535()
+        self.tca9535 = TCA9535()
 
         # # Define the interrupt pin (using BCM numbering, pin 4 as example for INT)
         # self.INT_PIN = 4
