@@ -1,3 +1,5 @@
+import logging
+
 import smbus2 as smbus
 
 # Default TCA9535 address (can vary depending on A0-A2 pin settings)
@@ -33,8 +35,8 @@ class TCA9535:
         self.output_port_1 = self.read_register(OUTPUT_PORT_1)  # Read current state of port 1
 
         # Print the current state of the output ports
-        print(f"Output Port 0: 0b{self.output_port_0:08b}")  # Using self.output_port_0
-        print(f"Output Port 1: 0b{self.output_port_1:08b}")  # Using self.output_port_1
+        logging.debug(f"Output Port 0: 0b{self.output_port_0:08b}")  # Using self.output_port_0
+        logging.debug(f"Output Port 1: 0b{self.output_port_1:08b}")  # Using self.output_port_1
 
     def write_register(self, register, value):
         """Write a value to the specified register"""

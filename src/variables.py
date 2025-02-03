@@ -13,3 +13,5 @@ os.makedirs(LOGGER_PATH, exist_ok=True)
 
 MAX_TEST_TIME = 70
 
+MOUNT_POINT = Path("/media/usb")
+

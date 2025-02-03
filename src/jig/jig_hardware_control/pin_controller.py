@@ -1,13 +1,14 @@
-import gpiozero
-from gpiozero import Button
 import time
 from .tca9535 import TCA9535
+
+from base_logger import get_logger_for_file
+logger = get_logger_for_file(__name__)
 
 class PinController:
     _instance = None
     def __init__(self):
         # Initialize the TCA9535 expander
-        self.tca9535 = TCA9535()
+        self.tca95R35 = TCA9535()
 
         # # Define the interrupt pin (using BCM numbering, pin 4 as example for INT)
         # self.INT_PIN = 4
@@ -127,17 +128,17 @@ class PinController:
             if 1 <= relay_number <= 4:
                 pin = relay_number - 1  # Convert 1-4 to 0-3
                 self.tca9535.set_pin(1, pin, not state)
-                print(f"Relay {relay_number}: {'ON' if state else 'OFF'}, pin {pin}")
+                logger.debug(f"Relay {relay_number}: {'ON' if state else 'OFF'}, pin {pin}")
 
                 # Выполняем задержку, если она указана
                 if delay > 0:
                     time.sleep(delay)
                 return 1  # Success
             else:
-                print("Error: Relay number must be between 1 and 4.")
+                logger.debug("Error: Relay number must be between 1 and 4.")
                 return 0  # Error
         except Exception as e:
-            print(f"Error while setting relay: {e}")
+            logger.debug(f"Error while setting relay: {e}")
             return 0  # Error
                 
     def usb_power_set(self, usb_port_number, state):
@@ -151,12 +152,12 @@ class PinController:
             if 1 <= usb_port_number <= 4:
                 pin = usb_port_number + 3  # Convert 1-4 to 4-7
                 self.tca9535.set_pin(1, pin, not state)
-                print(f"USB port {usb_port_number}: {'ON' if state else 'OFF'}, pin {pin}")
+                logger.debug(f"USB port {usb_port_number}: {'ON' if state else 'OFF'}, pin {pin}")
                 return 1  # Успешное выполнение
             else:
                 raise ValueError("USB port number must be between 1 and 4.")
         except Exception as e:
-            print(f"Error setting USB power: {e}")
+            logger.debug(f"Error setting USB power: {e}")
             return 0  # Ошибка выполнения
         
     def cleanup(self):
@@ -172,8 +173,8 @@ class PinController:
         if hasattr(self, 'interrupt_pin') and self.interrupt_pin is not None:
             try:
                 self.interrupt_pin.close()
-                print(f"GPIO{self.INT_PIN} (interrupt pin) released.")
+                logger.debug(f"GPIO{self.INT_PIN} (interrupt pin) released.")
             except Exception as e:
-                print(f"Failed to release GPIO{self.INT_PIN}: {e}")
+                logger.debug(f"Failed to release GPIO{self.INT_PIN}: {e}")
 
-        print("GPIO resources cleaned up.")
+        logger.debug("GPIO resources cleaned up.")
