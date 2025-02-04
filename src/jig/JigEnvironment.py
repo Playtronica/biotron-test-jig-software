@@ -9,14 +9,6 @@ from .tests.load_firmware_to_device import load_firmware_to_device
 
 logger = get_logger_for_file(__name__)
 
-test_seq = [
-    {
-        "test_func": None,
-        "args": [],
-        "description": None
-    }
-]
-
 class JigEnvironment:
     _instance = None
 
@@ -38,7 +30,7 @@ class JigEnvironment:
 
         # При старте программы выключаем USB 1
         # self.pins.usb_power_set(1, False)  # Выключаем USB 1
-        self.pins.gpio_write_pin(11, 0)  # TODO check gpio boots
+        self.pins.relay_set(2, 0)  # TODO check gpio boots
 
         logger.info("Screen updated to waiting state.")
 
@@ -118,12 +110,10 @@ class JigEnvironment:
         logger.info("Test sequence started.")
 
         logger.info(f"Boot device")
-        # self.pins.usb_power_set(1, False)
-        # time.sleep(1)
-        # self.pins.gpio_write_pin(11, 0)
-        # self.pins.usb_power_set(1, True)
-        # time.sleep(1)
-        # self.pins.gpio_write_pin(11, 1)
+        self.pins.usb_power_set(1, False)
+        self.pins.relay_set(2, 1)
+        self.pins.usb_power_set(1, True)
+        self.pins.relay_set(2, 0)
         res = load_firmware_to_device()
 
         if res is not None:
