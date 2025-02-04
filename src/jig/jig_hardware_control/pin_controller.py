@@ -130,14 +130,14 @@ class PinController:
             if 1 <= relay_number <= 4:
                 pin = relay_number - 1  # Convert 1-4 to 0-3
                 self.tca9535.set_pin(1, pin, not state)
-                logger.debug(f"Relay {relay_number}: {'ON' if state else 'OFF'}, pin {pin}")
+                logger.warn(f"Relay {relay_number}: {'ON' if state else 'OFF'}, pin {pin}")
 
                 # Выполняем задержку, если она указана
                 if delay > 0:
                     time.sleep(delay)
                 return 1  # Success
             else:
-                logger.debug("Error: Relay number must be between 1 and 4.")
+                logger.warn("Error: Relay number must be between 1 and 4.")
                 return 0  # Error
         except Exception as e:
             logger.debug(f"Error while setting relay: {e}")
