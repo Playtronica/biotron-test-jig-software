@@ -49,7 +49,7 @@ def is_device_connected():
     for line in lsblk_output.splitlines()[1:]:
         parts = line.split()
         logger.info(parts)
-        if len(parts) == 3 and parts[1] == 'part' and parts[2] == variables.MOUNT_POINT:
+        if len(parts) == 3 and parts[1] == 'part' and parts[2] == str(variables.MOUNT_POINT):
             return True
 
         if len(parts) == 2 and parts[1] == 'part':
