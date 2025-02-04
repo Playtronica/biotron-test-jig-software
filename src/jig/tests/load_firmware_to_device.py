@@ -101,10 +101,11 @@ def load_firmware_to_device():
             logger.warn("No unmounted USB drives found.")
             return None
 
-    resp = copy_firmware_to_usb_drive(source_file)
-    if not resp:
-        logger.warn("Failed to copy firmware file")
-        return None
+    # resp = copy_firmware_to_usb_drive(source_file)
+    # if not resp:
+    #     logger.warn("Failed to copy firmware file")
+    #     return None
+
 
     unmount_usb_drive()
 

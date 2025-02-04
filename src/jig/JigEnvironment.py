@@ -54,8 +54,8 @@ class JigEnvironment:
         time.sleep(1)
 
         try:
-            while True:
-                self.__main_cycle()
+            # while True:
+            self.__main_cycle()
         except OSError as e:
             # Логируем ошибку и продолжаем выполнение программы
             logger.error(f"Error reading pin state: {e}")
