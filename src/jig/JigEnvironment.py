@@ -30,7 +30,7 @@ class JigEnvironment:
 
         # При старте программы выключаем USB 1
         # self.pins.usb_power_set(1, False)  # Выключаем USB 1
-        self.pins.relay_set(2, 1)  # TODO check gpio boots
+        self.pins.relay_set(2, 0)  # TODO check gpio boots
 
         logger.info("Screen updated to waiting state.")
 
@@ -111,7 +111,9 @@ class JigEnvironment:
 
         logger.info(f"Boot device")
         self.pins.usb_power_set(1, False)
+        time.sleep(1)
         self.pins.relay_set(2, 1)
+        time.sleep(1)
         self.pins.usb_power_set(1, True)
         time.sleep(1)
         self.pins.relay_set(2, 0)
