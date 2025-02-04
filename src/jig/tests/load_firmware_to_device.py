@@ -34,18 +34,6 @@ def get_firmware_file():
     logger.info(f"Firmware file has been found. {file}")
     return firmware_file
 
-
-def list_unmounted_drives():
-    lsblk_output = subprocess.check_output(['lsblk', '-o', 'NAME,TYPE,MOUNTPOINT'], text=True)
-
-    for line in lsblk_output.splitlines()[1:]:
-        parts = line.split()
-        logger.info(parts)
-        if len(parts) == 2 and parts[1] == 'part':
-            return parts[0][2:]
-
-    return None
-
 def mount_usb_drive(drive_name):
     os.makedirs(variables.MOUNT_POINT, exist_ok=True)
     try:
@@ -55,19 +43,28 @@ def mount_usb_drive(drive_name):
         logger.warn(f"Failed to mount /dev/{drive_name}: {e}")
 
 
+def is_device_connected():
+    lsblk_output = subprocess.check_output(['lsblk', '-o', 'NAME,TYPE,MOUNTPOINT'], text=True)
+
+    for line in lsblk_output.splitlines()[1:]:
+        parts = line.split()
+        logger.info(parts)
+        if len(parts) == 3 and parts[1] == 'part' and parts[2] == variables.MOUNT_POINT:
+            return True
+
+        if len(parts) == 2 and parts[1] == 'part':
+            mount_usb_drive(parts[0][2:])
+            return True
+
+    return False
+
+
 def unmount_usb_drive():
     try:
         subprocess.run(['sudo', 'umount', variables.MOUNT_POINT], check=True)
         logger.info(f"Umounted {variables.MOUNT_POINT}")
     except subprocess.CalledProcessError as e:
         logger.warn(f"Failed to unmount {variables.MOUNT_POINT}: {e}")
-
-
-def check_mounted_drives():
-    for partition in psutil.disk_partitions(all=False):
-        if partition.mountpoint == variables.MOUNT_POINT:
-            return True
-    return False
 
 
 def copy_firmware_to_usb_drive(source_file):
@@ -86,26 +83,18 @@ def load_firmware_to_device():
     if not source_file:
         logger.warn("Some problem with loading firmware file")
         return None
+    logger.info(f"Firmware has been found")
 
-    if check_mounted_drives():
-        logger.info("Mounted drive has been detected")
-    else:
-        logger.info("Mounted drive has not been detected.")
+    if not is_device_connected():
+        logger.warn("Cant find any devices")
+        return None
+    logger.info(f"Device has been found")
 
-        unmounted_drive = list_unmounted_drives()
-
-        if unmounted_drive:
-            logger.info("Unmounted USB drives detected")
-            mount_usb_drive(unmounted_drive)
-        else:
-            logger.warn("No unmounted USB drives found.")
-            return None
-
-    resp = copy_firmware_to_usb_drive(source_file)
-    if not resp:
+    if not copy_firmware_to_usb_drive(source_file):
         logger.warn("Failed to copy firmware file")
         return None
 
+    logger.info(f"Firmware has been copied to usb drive")
     unmount_usb_drive()
 
 
