@@ -74,11 +74,12 @@ class JigEnvironment:
         if not self.__is_pin_status_changed():
             return
 
-        # Проверяем текущее состояние пина
-        if self.current_pin_state == 0:
-            self.__device_connected()
-        elif self.current_pin_state == 1:
-            self.__device_disconnected()
+        # if self.current_pin_state == 0:
+        #     self.__device_connected()
+        # elif self.current_pin_state == 1:
+        #     self.__device_disconnected()
+        # TODO For firmware testing
+        self.__device_connected()
 
     def __is_pin_status_changed(self):
         logger.debug(f"Current pin state: {self.current_pin_state}")

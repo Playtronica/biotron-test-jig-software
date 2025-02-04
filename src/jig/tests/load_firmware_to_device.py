@@ -40,7 +40,7 @@ def list_unmounted_drives():
 
     for line in lsblk_output.splitlines()[1:]:
         parts = line.split()
-        logger.info(line)
+        logger.info(parts)
         if len(parts) == 2 and parts[1] == 'part':
             return parts[0][2:]
 
