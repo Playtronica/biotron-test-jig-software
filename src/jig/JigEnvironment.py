@@ -122,6 +122,7 @@ class JigEnvironment:
         time.sleep(1)
         self.pins.gpio_write_pin(11, 0)
         res = load_firmware_to_device()
+        self.pins.usb_power_set(1, False)
 
         if res is not None:
             logger.warn(f"Test sequence failed: {res}")
