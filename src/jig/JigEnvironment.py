@@ -118,6 +118,8 @@ class JigEnvironment:
         logger.info("Test sequence started.")
 
         logger.info(f"Boot device")
+        self.pins.usb_power_set(1, False)
+        time.sleep(1)
         self.pins.gpio_write_pin(11, 0)
         self.pins.usb_power_set(1, True)
         time.sleep(1)
@@ -129,7 +131,6 @@ class JigEnvironment:
             return -1
 
         logger.info("Test sequence completed successfully.")
-        self.pins.usb_power_set(1, False)
         return 0
 
     def __device_disconnected(self):
