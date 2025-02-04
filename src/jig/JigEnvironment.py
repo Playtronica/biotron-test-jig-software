@@ -71,8 +71,8 @@ class JigEnvironment:
 
 
     def __main_cycle(self):
-        if not self.__is_pin_status_changed():
-            return
+        # if not self.__is_pin_status_changed():
+        #     return
 
         # if self.current_pin_state == 0:
         #     self.__device_connected()
