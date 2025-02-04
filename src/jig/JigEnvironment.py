@@ -58,7 +58,7 @@ class JigEnvironment:
         finally:
             # При завершении программы включаем USB 1
             logger.info("USB port 1: ON")
-            self.pins.usb_power_set(1, True)  # Включаем USB 1
+            self.pins.usb_power_set(0, True)  # Включаем USB 1
             # self.screen.turn_off_screen()
 
 
@@ -111,9 +111,9 @@ class JigEnvironment:
 
         logger.info(f"Boot device")
         self.pins.usb_power_set(1, False)
-        self.pins.relay_set(2, 0)
-        self.pins.usb_power_set(1, True)
         self.pins.relay_set(2, 1)
+        self.pins.usb_power_set(1, True)
+        self.pins.relay_set(2, 0)
         res = load_firmware_to_device()
 
         if res is not None:
