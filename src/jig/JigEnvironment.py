@@ -118,10 +118,10 @@ class JigEnvironment:
         logger.info("Test sequence started.")
 
         logger.info(f"Boot device")
-        self.pins.gpio_write_pin(11, 1)
+        self.pins.gpio_write_pin(11, 0)
         self.pins.usb_power_set(1, True)
         time.sleep(1)
-        self.pins.gpio_write_pin(11, 0)
+        self.pins.gpio_write_pin(11, 1)
         res = load_firmware_to_device()
 
         if res is not None:
