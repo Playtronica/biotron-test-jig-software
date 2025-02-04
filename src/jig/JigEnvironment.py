@@ -37,7 +37,7 @@ class JigEnvironment:
         self.last_pin_state = self.pins.gpio_read_pin(0)  # Начальное состояние пина
 
         # При старте программы выключаем USB 1
-        # self.pins.usb_power_set(1, False)  # Выключаем USB 1
+        self.pins.usb_power_set(1, False)  # Выключаем USB 1
         self.pins.gpio_write_pin(11, 0) # TODO check gpio boots
 
         logger.info("Screen updated to waiting state.")
@@ -54,8 +54,8 @@ class JigEnvironment:
         time.sleep(1)
 
         try:
-            # while True:
-            self.__main_cycle()
+            while True:
+                self.__main_cycle()
         except OSError as e:
             # Логируем ошибку и продолжаем выполнение программы
             logger.error(f"Error reading pin state: {e}")
@@ -71,14 +71,13 @@ class JigEnvironment:
 
 
     def __main_cycle(self):
-        # if not self.__is_pin_status_changed():
-        #     return
-        #
-        # if self.current_pin_state == 0:
-        #     self.__device_connected()
-        # elif self.current_pin_state == 1:
-        #     self.__device_disconnected()
-        self.__device_connected()
+        if not self.__is_pin_status_changed():
+            return
+
+        if self.current_pin_state == 0:
+            self.__device_connected()
+        elif self.current_pin_state == 1:
+            self.__device_disconnected()
 
     def __is_pin_status_changed(self):
         logger.debug(f"Current pin state: {self.current_pin_state}")
@@ -118,7 +117,6 @@ class JigEnvironment:
         logger.info("Test sequence started.")
 
         logger.info(f"Boot device")
-        self.pins.usb_power_set(1, False)
         self.pins.gpio_write_pin(11, 0)
         self.pins.usb_power_set(1, True)
         time.sleep(1)
