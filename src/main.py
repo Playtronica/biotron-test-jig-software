@@ -32,9 +32,7 @@ if __name__ == '__main__':
     initial_part()
 
     jig = JigEnvironment()
-    # jig.init_jig_main_cycle()
-    # TODO REMOVE AFTER TEST
-    load_firmware_to_device()
+    jig.init_jig_main_cycle()
 
 
 
