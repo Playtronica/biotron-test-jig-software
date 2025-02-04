@@ -5,6 +5,7 @@ import subprocess
 
 from firmware_updater import update_firmware_files
 from jig.JigEnvironment import JigEnvironment
+from jig.tests.load_firmware_to_device import load_firmware_to_device
 
 logger = get_logger_for_file(__name__)
 
@@ -31,7 +32,9 @@ if __name__ == '__main__':
     initial_part()
 
     jig = JigEnvironment()
-    jig.init_jig_main_cycle()
+    # jig.init_jig_main_cycle()
+    # TODO REMOVE AFTER TEST
+    load_firmware_to_device()
 
 
 
