@@ -111,13 +111,11 @@ class JigEnvironment:
 
         logger.info(f"Boot device")
         self.pins.usb_power_set(1, False)
-        time.sleep(0.1)
         self.pins.relay_set(2, 1)
-        time.sleep(0.1)
         self.pins.usb_power_set(1, True)
-        time.sleep(0.1)
+        time.sleep(1)
         self.pins.relay_set(2, 0)
-        time.sleep(0.1)
+        time.sleep(1)
         res = load_firmware_to_device()
 
         if res is not None:
