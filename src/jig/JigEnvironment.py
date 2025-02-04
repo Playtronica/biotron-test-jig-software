@@ -117,22 +117,15 @@ class JigEnvironment:
     def __test_process(self):
         logger.info("Test sequence started.")
 
-        res = load_firmware_to_device()
-        time.sleep(1)
-        # TODO Escape tree hell
-        if res is not None:
-            if res == "DEVICE_NOT_FOUND":
-                logger.warn("Device not found. Try make hardware boot")
-                self.pins.usb_power_set(1, False)
-                self.pins.gpio_write_pin(11, 1)
-                self.pins.usb_power_set(1, True)
-                self.pins.gpio_write_pin(11, 0)
-                res = load_firmware_to_device()
-                time.sleep(1)
-                if res is not None:
-                    logger.warn(f"Test sequence failed: {res}")
-                    return -1
+        logger.info(f"Boot device")
+        self.pins.usb_power_set(1, False)
+        self.pins.gpio_write_pin(11, 1)
+        self.pins.usb_power_set(1, True)
+        self.pins.gpio_write_pin(11, 0)
 
+        res = load_firmware_to_device()
+
+        if res is not None:
             logger.warn(f"Test sequence failed: {res}")
             return -1
 
