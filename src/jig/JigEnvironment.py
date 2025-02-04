@@ -65,7 +65,7 @@ class JigEnvironment:
             logger.error("Program interrupted by user")
         finally:
             # При завершении программы включаем USB 1
-            logger.info("USB port 1: ON")
+            # logger.info("USB port 1: ON")
             self.pins.usb_power_set(1, True)  # Включаем USB 1
             # self.screen.turn_off_screen()
 
@@ -117,10 +117,10 @@ class JigEnvironment:
         logger.info("Test sequence started.")
 
         logger.info(f"Boot device")
-        self.pins.gpio_write_pin(11, 0)
+        self.pins.gpio_write_pin(11, 1)
         self.pins.usb_power_set(1, True)
         time.sleep(1)
-        self.pins.gpio_write_pin(11, 1)
+        self.pins.gpio_write_pin(11, 0)
         res = load_firmware_to_device()
 
         if res is not None:
