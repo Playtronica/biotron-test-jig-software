@@ -37,8 +37,8 @@ class JigEnvironment:
         self.last_pin_state = self.pins.gpio_read_pin(0)  # Начальное состояние пина
 
         # При старте программы выключаем USB 1
-        self.pins.usb_power_set(1, False)  # Выключаем USB 1
-        self.pins.gpio_write_pin(11, 0) # TODO check gpio boots
+        # self.pins.usb_power_set(1, False)  # Выключаем USB 1
+        self.pins.gpio_write_pin(11, 0)  # TODO check gpio boots
 
         logger.info("Screen updated to waiting state.")
 
@@ -118,12 +118,12 @@ class JigEnvironment:
         logger.info("Test sequence started.")
 
         logger.info(f"Boot device")
-        self.pins.usb_power_set(1, False)
-        time.sleep(1)
-        self.pins.gpio_write_pin(11, 0)
-        self.pins.usb_power_set(1, True)
-        time.sleep(1)
-        self.pins.gpio_write_pin(11, 1)
+        # self.pins.usb_power_set(1, False)
+        # time.sleep(1)
+        # self.pins.gpio_write_pin(11, 0)
+        # self.pins.usb_power_set(1, True)
+        # time.sleep(1)
+        # self.pins.gpio_write_pin(11, 1)
         res = load_firmware_to_device()
 
         if res is not None:
