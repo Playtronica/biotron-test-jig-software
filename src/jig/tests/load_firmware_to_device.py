@@ -82,20 +82,21 @@ def load_firmware_to_device():
     source_file = get_firmware_file()
     if not source_file:
         logger.warn("Some problem with loading firmware file")
-        return None
+        return "FIRMWARE_NOT_FOUND"
     logger.info(f"Firmware has been found")
 
     if not is_device_connected():
         logger.warn("Cant find any devices")
-        return None
+        return "DEVICE_NOT_FOUND"
     logger.info(f"Device has been found")
 
     if not copy_firmware_to_usb_drive(source_file):
         logger.warn("Failed to copy firmware file")
-        return None
+        return "CP_FIRMWARE_ERROR"
 
     logger.info(f"Firmware has been copied to usb drive")
     unmount_usb_drive()
+
 
 
 if __name__ == "__main__":

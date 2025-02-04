@@ -54,8 +54,8 @@ class JigEnvironment:
         time.sleep(1)
 
         try:
-            # while True:
-            self.__main_cycle()
+            while True:
+                self.__main_cycle()
         except OSError as e:
             # Логируем ошибку и продолжаем выполнение программы
             logger.error(f"Error reading pin state: {e}")
@@ -71,15 +71,13 @@ class JigEnvironment:
 
 
     def __main_cycle(self):
-        # if not self.__is_pin_status_changed():
-        #     return
+        if not self.__is_pin_status_changed():
+            return
 
-        # if self.current_pin_state == 0:
-        #     self.__device_connected()
-        # elif self.current_pin_state == 1:
-        #     self.__device_disconnected()
-        # TODO For firmware testing
-        self.__device_connected()
+        if self.current_pin_state == 0:
+            self.__device_connected()
+        elif self.current_pin_state == 1:
+            self.__device_disconnected()
 
     def __is_pin_status_changed(self):
         logger.debug(f"Current pin state: {self.current_pin_state}")
@@ -118,7 +116,26 @@ class JigEnvironment:
     def __test_process(self):
         logger.info("Test sequence started.")
 
-        load_firmware_to_device()
+        res = load_firmware_to_device()
+        time.sleep(1)
+        # TODO Escape tree hell
+        if res is not None:
+            if res == "DEVICE_NOT_FOUND":
+                logger.warn("Device not found. Try make hardware boot")
+                self.pins.usb_power_set(1, False)
+                self.pins.gpio_write_pin(11, 1)
+                self.pins.usb_power_set(1, True)
+                time.sleep(1)
+                self.pins.gpio_write_pin(11, 0)
+                time.sleep(1)
+                res = load_firmware_to_device()
+                time.sleep(1)
+                if res is not None:
+                    logger.warn(f"Test sequence failed: {res}")
+                    return -1
+
+            logger.warn(f"Test sequence failed: {res}")
+            return -1
 
         logger.info("Test sequence completed successfully.")
         return 0
