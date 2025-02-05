@@ -9,16 +9,17 @@ serial = SerialTests()
 pin_controller = PinController()
 logger = get_logger_for_file(__name__)
 
+
 def get_photoresistors_state():
     res = 0
-
     for _ in range(variables.PHOTORESISTOR_SAMPLES):
         data = serial.last_data.copy()
-        if "photoresistor_adc" not in data:
-            logger.warning("Photo resistors data missing")
-            return -1
-        res += data["photoresistor_adc"]
-        time.sleep(0.1)
+        logger.info(data)
+        # if "photoresistor_adc" not in data:
+        #     logger.warning("Photo resistors data missing")
+        #     return -1
+        # res += data["photoresistor_adc"]
+        time.sleep(1)
 
     return res / variables.PHOTORESISTOR_SAMPLES
 
