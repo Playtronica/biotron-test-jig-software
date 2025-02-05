@@ -8,7 +8,7 @@ from jig.jig_hardware_control.pin_controller import PinController
 from jig.jig_hardware_control.Display import Display
 
 from jig.tests.load_firmware_to_device import load_firmware_to_device
-
+from jig.tests.midi_processes import midi_processes
 
 logger = get_logger_for_file(__name__)
 
@@ -54,8 +54,8 @@ class JigEnvironment:
         ])
 
         try:
-            while True:
-                self.__main_cycle()
+            # while True:
+            self.__main_cycle()
         except OSError as e:
             # Логируем ошибку и продолжаем выполнение программы
             logger.error(f"Error reading pin state: {e}")
@@ -72,14 +72,14 @@ class JigEnvironment:
 
 
     def __main_cycle(self):
-        if not self.__is_pin_status_changed():
-            return
-
-        if self.current_pin_state == 0:
-            self.__device_connected()
-        elif self.current_pin_state == 1:
-            self.__device_disconnected()
-
+        # if not self.__is_pin_status_changed():
+        #     return
+        #
+        # if self.current_pin_state == 0:
+        #     self.__device_connected()
+        # elif self.current_pin_state == 1:
+        #     self.__device_disconnected()
+        self.__device_connected()
 
     def __is_pin_status_changed(self):
         logger.debug(f"Current pin state: {self.current_pin_state}")
@@ -129,6 +129,11 @@ class JigEnvironment:
         time.sleep(1)
         res = load_firmware_to_device()
 
+        if res is not None:
+            logger.warn(f"Test sequence failed: {res}")
+            return -1
+
+        res = midi_processes()
         if res is not None:
             logger.warn(f"Test sequence failed: {res}")
             return -1
