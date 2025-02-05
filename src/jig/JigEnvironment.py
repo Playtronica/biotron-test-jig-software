@@ -7,12 +7,14 @@ from base_logger import get_logger_for_file
 from jig.jig_hardware_control.pin_controller import PinController
 from jig.jig_hardware_control.Display import Display
 from jig.tests.led_tests import led_tests
+from jig.jig_hardware_control.rgb_led import RgbColorsEnum
 
 from jig.tests.load_firmware_to_device import load_firmware_to_device
 from jig.tests.midi_processes import midi_processes
 from jig.tests.photoresistors_test import photoresistors_test
 from jig.tests.plants_check import plants_test
 from jig.tests.serial_tests import SerialTests
+
 
 logger = get_logger_for_file(__name__)
 
@@ -58,6 +60,8 @@ class JigEnvironment:
             "hello world",
             "shadowik"
         ])
+
+        self.screen.set_color(RgbColorsEnum.PURPLE)
 
         try:
             # while True:
