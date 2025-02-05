@@ -145,6 +145,7 @@ class JigEnvironment:
             return -1
 
         self.serial.start_serial()
+        time.sleep(0.1)
 
         photoresistors_test()
 
