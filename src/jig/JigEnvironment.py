@@ -133,7 +133,9 @@ class JigEnvironment:
             logger.warn(f"Test sequence failed: {res}")
             return -1
 
-        time.sleep(1)
+        # TODO rm long delay
+        logger.warn("TEST LONG DELAY")
+        time.sleep(10)
         res = midi_processes()
         if res is not None:
             logger.warn(f"Test sequence failed: {res}")
