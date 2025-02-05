@@ -15,6 +15,7 @@ def get_photoresistors_state():
     for _ in range(variables.PHOTORESISTOR_SAMPLES):
         data = serial.last_data.copy()
         logger.info(data)
+        logger.info(serial.is_enabled)
         # if "photoresistor_adc" not in data:
         #     logger.warning("Photo resistors data missing")
         #     return -1
