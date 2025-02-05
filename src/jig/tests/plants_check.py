@@ -29,14 +29,14 @@ def plants_test():
         logger.warn("Some problems with getting status")
         return ""
 
-    logger.info(f"Photoresistor state without leds: {no_connection_plant_state}")
+    logger.info(f"Plant state without connection: {no_connection_plant_state}")
 
-    pin_controller.relay_set(1, 0)
-    connection_plant_state = get_plants_state()
     pin_controller.relay_set(1, 1)
+    connection_plant_state = get_plants_state()
+    pin_controller.relay_set(1, 0)
 
     if connection_plant_state == -1:
         logger.warn("Some problems with getting status")
         return ""
 
-    logger.info(f"Photo resistors state with leds: {connection_plant_state}")
+    logger.info(f"Plant state with connection: {connection_plant_state}")
