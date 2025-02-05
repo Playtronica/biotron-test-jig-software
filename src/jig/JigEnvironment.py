@@ -133,6 +133,7 @@ class JigEnvironment:
             logger.warn(f"Test sequence failed: {res}")
             return -1
 
+        time.sleep(1)
         res = midi_processes()
         if res is not None:
             logger.warn(f"Test sequence failed: {res}")

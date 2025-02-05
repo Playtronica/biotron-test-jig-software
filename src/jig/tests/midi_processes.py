@@ -13,6 +13,7 @@ sysex_enable_logs = mido.Message.from_bytes([240, 11, 20, 13, 2, 247])
 def find_midi_device():
     try:
         global biotron_midi_output
+        print(mido.get_output_names())
         for output_device in mido.get_output_names():
             if "Biotron" in output_device:
                 logger.info("Biotron was found")
@@ -66,4 +67,4 @@ def midi_processes():
         logger.warn("Failed to close midi connection")
         return "MIDI_CLOSE_ERROR"
 
-    return 
+    return
