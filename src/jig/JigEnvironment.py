@@ -148,8 +148,8 @@ class JigEnvironment:
         time.sleep(0.1)
 
         for _ in range(variables.PHOTORESISTOR_SAMPLES):
-            logger.info(self.serial.last_data.copy())
-            time.sleep(0.1)
+            logger.info(self.serial.last_data)
+            time.sleep(1)
 
         photoresistors_test()
 
