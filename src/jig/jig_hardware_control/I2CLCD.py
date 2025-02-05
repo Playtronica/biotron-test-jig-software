@@ -49,6 +49,8 @@ Rw = 0b00000010  # Read/Write bit
 Rs = 0b00000001  # Register select bit
 
 class I2CLCD:
+    _instance = None
+
     def __init__(self, address, cols, rows, bus=1):
         self.bus = smbus2.SMBus(bus)
         self.address = address
@@ -59,6 +61,11 @@ class I2CLCD:
         self.displaycontrol = LCD_DISPLAYON | LCD_CURSOROFF | LCD_BLINKOFF
         self.displaymode = LCD_ENTRYLEFT | LCD_ENTRYSHIFTDECREMENT
         self.init_lcd()
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
 
     def write_command(self, cmd):
         """Send command to the LCD."""

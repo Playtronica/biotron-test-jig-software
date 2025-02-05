@@ -4,8 +4,12 @@ import time
 import variables
 from base_logger import get_logger_for_file
 
-from .jig_hardware_control.pin_controller import PinController
-from .tests.load_firmware_to_device import load_firmware_to_device
+from jig.jig_hardware_control.pin_controller import PinController
+from jig.jig_hardware_control.Display import Display
+
+from jig.tests.load_firmware_to_device import load_firmware_to_device
+
+
 
 logger = get_logger_for_file(__name__)
 
@@ -14,7 +18,7 @@ class JigEnvironment:
 
     def __init__(self,):
         self.pins = PinController()
-        # self.screen = Screen()  # Инициализируем Screen через класс Screen
+        self.screen = Display()  # Инициализируем Screen через класс Screen
         self.error_code = None  # To display errors
         self.pins.gpio_set_pin_direction(0, 1)  # pin 0 port 0 as input (1)
         self.current_test_function = ""  # Новый атрибут для текущей функции
@@ -45,6 +49,11 @@ class JigEnvironment:
         logger.info("Entering main loop...")
         time.sleep(1)
 
+        self.screen.set_text([
+            "hello world"
+            "shadowik"
+        ])
+
         try:
             while True:
                 self.__main_cycle()
@@ -59,6 +68,7 @@ class JigEnvironment:
             # При завершении программы включаем USB 1
             logger.info("USB port 1: ON")
             self.pins.usb_power_set(0, True)  # Включаем USB 1
+
             # self.screen.turn_off_screen()
 
 
