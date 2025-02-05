@@ -9,6 +9,7 @@ from jig.jig_hardware_control.Display import Display
 
 from jig.tests.load_firmware_to_device import load_firmware_to_device
 from jig.tests.midi_processes import midi_processes
+from jig.tests.serial_tests import SerialTests
 
 logger = get_logger_for_file(__name__)
 
@@ -18,6 +19,7 @@ class JigEnvironment:
     def __init__(self,):
         self.pins = PinController()
         self.screen = Display()  # Инициализируем Screen через класс Screen
+        self.serial = SerialTests()
         self.error_code = None  # To display errors
         self.pins.gpio_set_pin_direction(0, 1)  # pin 0 port 0 as input (1)
         self.current_test_function = ""  # Новый атрибут для текущей функции
@@ -140,6 +142,14 @@ class JigEnvironment:
         if res is not None:
             logger.warn(f"Test sequence failed: {res}")
             return -1
+
+        self.serial.start_serial()
+        for _ in range(5):
+            print(self.serial.last_data)
+            time.sleep(1)
+
+        self.serial.stop_serial()
+
 
         logger.info("Test sequence completed successfully.")
         return 0
