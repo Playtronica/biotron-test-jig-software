@@ -13,7 +13,7 @@ class SerialTests:
         self.serial = None
         self.thread = None
 
-        self.last_data = {}
+        self.last_data = None
 
     def __new__(cls, *args, **kwargs):
         if cls._instance is None:
