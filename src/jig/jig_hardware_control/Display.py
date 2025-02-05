@@ -1,4 +1,4 @@
-from I2CLCD import I2CLCD
+from .I2CLCD import I2CLCD
 
 import variables
 from base_logger import get_logger_for_file
@@ -30,11 +30,11 @@ class Display:
             self.screen.write(lst_of_text[i])
 
     def __validate_text_for_screen(self, lst_of_text):
-        if len(lst_of_text) >= variables.SCREEN_ROWS:
+        if len(lst_of_text) > variables.SCREEN_ROWS:
             logger.warn("To many rows")
             return False
 
-        if max(map(len, lst_of_text)) >= variables.SCREEN_COLUMNS:
+        if max(map(len, lst_of_text)) > variables.SCREEN_COLUMNS:
             logger.warn("Text is too long")
             return False
 

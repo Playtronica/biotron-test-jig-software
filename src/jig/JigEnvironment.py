@@ -10,7 +10,6 @@ from jig.jig_hardware_control.Display import Display
 from jig.tests.load_firmware_to_device import load_firmware_to_device
 
 
-
 logger = get_logger_for_file(__name__)
 
 class JigEnvironment:
