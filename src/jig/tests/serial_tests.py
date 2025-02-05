@@ -44,6 +44,7 @@ class SerialTests:
             while self.is_enabled:
                 line = self.serial.readline().decode("ascii")
                 if not line or line[0] != "{":
+                    logger.warn(f"Some problems with logs {line}")
                     continue
                 self.last_data = eval(line)
 
