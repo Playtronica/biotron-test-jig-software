@@ -6,6 +6,7 @@ from base_logger import get_logger_for_file
 
 from jig.jig_hardware_control.pin_controller import PinController
 from jig.jig_hardware_control.Display import Display
+from jig.tests.led_tests import led_tests
 
 from jig.tests.load_firmware_to_device import load_firmware_to_device
 from jig.tests.midi_processes import midi_processes
@@ -153,6 +154,8 @@ class JigEnvironment:
         plants_test()
 
         self.serial.stop_serial()
+
+        led_tests()
 
 
         logger.info("Test sequence completed successfully.")
