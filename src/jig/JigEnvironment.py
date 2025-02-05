@@ -49,7 +49,7 @@ class JigEnvironment:
         time.sleep(1)
 
         self.screen.set_text([
-            "hello world"
+            "hello world",
             "shadowik"
         ])
 
