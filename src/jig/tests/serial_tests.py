@@ -25,7 +25,7 @@ class SerialTests:
             logger.warn("Serial thread has already been enabled")
             return
         self.serial = serial.Serial("/dev/ttyACM0", 115200, timeout=1)
-        self.thread = Thread(target=self.__proceess)
+        self.thread = Thread(target=self.__process)
         self.thread.start()
         self.is_enabled = True
 
@@ -33,21 +33,23 @@ class SerialTests:
         if not self.is_enabled:
             logger.warn("Serial thread has not already been enabled")
             return
-        self.thread.stop()
-        self.thread.join()
         self.is_enabled = False
+        self.thread.join()
         self.serial.close()
         self.serial = None
+        self.thread = None
 
-    def __proceess(self):
+    def __process(self):
         try:
-            while True:
+            while self.is_enabled:
                 line = self.serial.readline().decode("ascii")
                 if not line or line[0] != "{":
                     continue
                 self.last_data = eval(line)
+
         except Exception as e:
             logger.error("Exception while reading serial data: {}".format(e))
             self.is_enabled = False
             self.serial.close()
             self.serial = None
+            self.thread = None

@@ -9,6 +9,7 @@ from jig.jig_hardware_control.Display import Display
 
 from jig.tests.load_firmware_to_device import load_firmware_to_device
 from jig.tests.midi_processes import midi_processes
+from jig.tests.photoresistors_test import photoresistors_test
 from jig.tests.serial_tests import SerialTests
 
 logger = get_logger_for_file(__name__)
@@ -144,9 +145,8 @@ class JigEnvironment:
             return -1
 
         self.serial.start_serial()
-        for _ in range(5):
-            print(self.serial.last_data)
-            time.sleep(1)
+
+        photoresistors_test()
 
         self.serial.stop_serial()
 
