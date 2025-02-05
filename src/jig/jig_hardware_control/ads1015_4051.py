@@ -48,17 +48,17 @@ class MultiplexerADCReader:
         """Read an analog value from a specific channel of a multiplexer.
 
         Args:
-            multiplexer (int): The multiplexer number (1 or 2).
+            multiplexer (int): The multiplexer number (0 or 1).
             channel (int): The channel number (0-7).
 
         Returns:
             float: The analog value in volts.
         """
-        if multiplexer not in [1, 2]:
+        if multiplexer not in [0, 1]:
             raise ValueError("Multiplexer must be 1 or 2.")
 
         # Enable the selected multiplexer
-        if multiplexer == 1:
+        if multiplexer == 0:
             self.pin_controller.gpio_write_pin(self.E1, 0)  # Enable first multiplexer
             self.pin_controller.gpio_write_pin(self.E2, 1)  # Disable second multiplexer
         else:
