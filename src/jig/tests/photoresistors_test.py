@@ -41,7 +41,7 @@ def photoresistors_test():
 
     logger.info(f"Photo resistors state with leds: {led_photoresistors_state}")
 
-    if led_photoresistors_state - no_led_photoresistors_state > 100:
+    if no_led_photoresistors_state - no_led_photoresistors_state > 100:
         logger.info("Photoresistor test complete successfully")
     else:
         logger.warn("Photoresistor test failed")
