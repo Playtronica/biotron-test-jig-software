@@ -1,3 +1,5 @@
+import time
+
 import mido
 import mido.backends.rtmidi
 
@@ -47,6 +49,7 @@ def send_debug_sysex_messages_to_midi_device():
             return False
 
         biotron_midi_output.send(sysex_test_mode)
+        time.sleep(0.1)
         biotron_midi_output.send(sysex_enable_logs)
         return True
     except Exception as e:
