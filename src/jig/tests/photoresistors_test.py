@@ -18,7 +18,7 @@ def get_photoresistors_state():
             logger.warning("Photo resistors data missing")
             return -1
         res += data["photoresistor_adc"]
-        time.sleep(1)
+        time.sleep(0.1)
 
     return res / variables.PHOTORESISTOR_SAMPLES
 

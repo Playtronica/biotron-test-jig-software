@@ -58,8 +58,8 @@ class JigEnvironment:
         self.__device_disconnected()
 
         try:
-            while True:
-                self.__main_cycle()
+            # while True:
+            self.__main_cycle()
         except OSError as e:
             # Логируем ошибку и продолжаем выполнение программы
             logger.error(f"Error reading pin state: {e}")
@@ -74,13 +74,14 @@ class JigEnvironment:
 
 
     def __main_cycle(self):
-        if not self.__is_pin_status_changed():
-            return
-
-        if self.current_pin_state == 0:
-            self.__device_connected()
-        elif self.current_pin_state == 1:
-            self.__device_disconnected()
+        # if not self.__is_pin_status_changed():
+        #     return
+        #
+        # if self.current_pin_state == 0:
+        #     self.__device_connected()
+        # elif self.current_pin_state == 1:
+        #     self.__device_disconnected()
+        self.__device_connected()
 
     def __is_pin_status_changed(self):
         logger.debug(f"Current pin state: {self.current_pin_state}")
@@ -143,9 +144,7 @@ class JigEnvironment:
         try:
             logger.info("Test sequence started.")
 
-            # TODO rm long delay
-            logger.warn("TEST LONG DELAY")
-            time.sleep(10)
+            time.sleep(5)
             if res := midi_processes() is not None:
                 logger.warn(f"MIDI Test is failed: {res}")
                 return 1
@@ -180,13 +179,13 @@ class JigEnvironment:
     def __boot_device(self):
         logger.info(f"Boot device")
         self.pins.usb_power_set(1, False)
-        time.sleep(1)
+        time.sleep(0.5)
         self.pins.relay_set(2, 1)
-        time.sleep(1)
+        time.sleep(0.5)
         self.pins.usb_power_set(1, True)
-        time.sleep(1)
+        time.sleep(0.5)
         self.pins.relay_set(2, 0)
-        time.sleep(1)
+        time.sleep(0.5)
 
     def __device_disconnected(self):
         logger.info("Board removed, ready for next test")

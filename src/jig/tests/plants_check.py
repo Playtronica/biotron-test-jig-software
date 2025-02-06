@@ -18,7 +18,7 @@ def get_plants_state():
             logger.warning("Photo resistors data missing")
             return -1
         res += data["generator_freq"]
-        time.sleep(1)
+        time.sleep(0.1)
 
     return res / variables.PHOTORESISTOR_SAMPLES
 
