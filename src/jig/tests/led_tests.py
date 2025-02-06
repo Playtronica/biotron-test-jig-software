@@ -24,12 +24,13 @@ def led_tests():
         for multiplexer_channel_num in range(8):
             adc_val = adc_read.read_channel(multiplexer_num, multiplexer_channel_num)
             logger.info(f"Value of multiplexer {multiplexer_num} {multiplexer_channel_num}: {adc_val}")
+            adc_val -= 0.05
 
             if multiplexer_num == 1 and multiplexer_channel_num == 2:
                 logger.warn("BROKEN. IGNORE")
                 continue
 
-            if adc_val < data_test_each[(multiplexer_num, multiplexer_channel_num)] + 0.05:
+            if adc_val >= data_test_each[(multiplexer_num, multiplexer_channel_num)]:
                 logger.warn(f"Problems with blue led {multiplexer_num} {multiplexer_channel_num}: {adc_val}")
                 return "BLUE_LED_TEST_FAILED"
 
