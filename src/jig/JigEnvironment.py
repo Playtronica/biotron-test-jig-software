@@ -115,7 +115,7 @@ class JigEnvironment:
         try:
             self.__boot_device()
 
-            if res := load_firmware_to_device() is not None:
+            if (res := load_firmware_to_device()) is not None:
                 logger.warn(f"Load firmware test is failed: {res}")
                 self.screen.set_text(f"ERROR 00")
                 self.screen.set_color(RgbColorsEnum.RED)
@@ -179,13 +179,13 @@ class JigEnvironment:
     def __boot_device(self):
         logger.info(f"Boot device")
         self.pins.usb_power_set(1, False)
-        time.sleep(0.5)
+        time.sleep(1)
         self.pins.relay_set(2, 1)
-        time.sleep(0.5)
+        time.sleep(1)
         self.pins.usb_power_set(1, True)
-        time.sleep(0.5)
+        time.sleep(1)
         self.pins.relay_set(2, 0)
-        time.sleep(0.5)
+        time.sleep(1)
 
     def __device_disconnected(self):
         logger.info("Board removed, ready for next test")
