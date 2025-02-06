@@ -161,6 +161,7 @@ class JigEnvironment:
 
         while True:
             led_tests()
+            print()
             time.sleep(5)
 
 
