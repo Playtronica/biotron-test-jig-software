@@ -155,7 +155,7 @@ class JigEnvironment:
                 return 1
 
             self.serial.start_serial()
-            time.sleep(0.1)
+            time.sleep(1)
 
             if res := photoresistors_test() is not None:
                 logger.warn(f"Photo resistor is test failed: {res}")
