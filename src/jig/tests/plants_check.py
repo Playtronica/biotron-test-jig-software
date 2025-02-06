@@ -23,20 +23,29 @@ def get_plants_state():
     return res / variables.PHOTORESISTOR_SAMPLES
 
 
-def plants_test():
+def plants_disabled_test():
     no_connection_plant_state = get_plants_state()
     if no_connection_plant_state == -1:
         logger.warn("Some problems with getting status")
-        return ""
+        return "GET_DATA_FAILED"
+    elif no_connection_plant_state > 100:
+        logger.warn("Too high val without connection")
+        return "TEST_FAILED"
 
     logger.info(f"Plant state without connection: {no_connection_plant_state}")
 
+
+def plants_enabled_test():
     pin_controller.relay_set(1, 1)
+    time.sleep(0.5)
     connection_plant_state = get_plants_state()
     pin_controller.relay_set(1, 0)
 
     if connection_plant_state == -1:
         logger.warn("Some problems with getting status")
-        return ""
+        return "GET_DATA_FAILED"
+    elif connection_plant_state < 50000:
+        logger.warn("Too low val with connection")
+        return "TEST_FAILED"
 
     logger.info(f"Plant state with connection: {connection_plant_state}")

@@ -12,7 +12,7 @@ from jig.jig_hardware_control.rgb_led import RgbColorsEnum
 from jig.tests.load_firmware_to_device import load_firmware_to_device
 from jig.tests.midi_processes import midi_processes
 from jig.tests.photoresistors_test import photoresistors_test
-from jig.tests.plants_check import plants_test
+from jig.tests.plants_check import plants_disabled_test, plants_enabled_test
 from jig.tests.serial_tests import SerialTests
 
 
@@ -56,12 +56,7 @@ class JigEnvironment:
         logger.info("Entering main loop...")
         time.sleep(1)
 
-        self.screen.set_text([
-            "hello world",
-            "shadowik"
-        ])
-
-        self.screen.set_color(RgbColorsEnum.GREEN)
+        self.__device_disconnected()
 
         try:
             # while True:
@@ -117,17 +112,76 @@ class JigEnvironment:
 
     def __device_connected(self):
         logger.info("Pin state is 0, starting test sequence...")
+
+        self.screen.set_text(["FLASH"])
+        self.screen.set_color(RgbColorsEnum.YELLOW)
+        try:
+            self.__boot_device()
+
+            if res := load_firmware_to_device() is not None:
+                logger.warn(f"Load firmware test is failed: {res}")
+                self.screen.set_text([f"ERROR -1"])
+                self.screen.set_color(RgbColorsEnum.RED)
+                return
+        except Exception as e:
+            logger.error(f"Failed to boot device: {e}")
+            self.screen.set_text([f"ERROR -1"])
+            self.screen.set_color(RgbColorsEnum.RED)
+            return
+
+        self.screen.set_text(["TESTING"])
+        self.screen.set_color(RgbColorsEnum.YELLOW)
         result = self.__test_process()
-        result = 0
+
         if result != 0:
-            self.error_code = result
             logger.warn(f"Test sequence finished with error code: {self.error_code}")
+            self.screen.set_text([f"ERROR {result:02}"])
+            self.screen.set_color(RgbColorsEnum.RED)
         else:
             logger.info("Test sequence completed successfully.")
+            self.test_count += 1
+            self.screen.set_text([f"TEST COMPLETE", f"{self.test_count:4}"])
+            self.screen.set_color(RgbColorsEnum.GREEN)
 
     def __test_process(self):
-        logger.info("Test sequence started.")
+        try:
+            logger.info("Test sequence started.")
 
+            # TODO rm long delay
+            logger.warn("TEST LONG DELAY")
+            time.sleep(10)
+            if res := midi_processes() is not None:
+                logger.warn(f"MIDI Test is failed: {res}")
+                return 1
+
+            self.serial.start_serial()
+            time.sleep(0.1)
+
+            if res := photoresistors_test() is not None:
+                logger.warn(f"Photo resistor is test failed: {res}")
+                return 2
+
+            if res := plants_disabled_test() is not None:
+                logger.warn(f"Plant test is failed: {res}")
+                return 3
+
+            if res := plants_enabled_test() is not None:
+                logger.warn(f"Plant test is failed: {res}")
+                return 4
+
+            self.serial.stop_serial()
+
+            if res := led_tests() is not None:
+                logger.warn(f"Led test is failed: {res}")
+                return 5
+
+            logger.info("Test sequence completed successfully.")
+            return 0
+        except Exception as e:
+            logger.error(f"Test sequence failed for unknown reason: {e}")
+            return -1
+
+    def __boot_device(self):
         logger.info(f"Boot device")
         self.pins.usb_power_set(1, False)
         time.sleep(1)
@@ -137,40 +191,11 @@ class JigEnvironment:
         time.sleep(1)
         self.pins.relay_set(2, 0)
         time.sleep(1)
-        res = load_firmware_to_device()
-
-        if res is not None:
-            logger.warn(f"Test sequence failed: {res}")
-            return -1
-
-        # TODO rm long delay
-        logger.warn("TEST LONG DELAY")
-        time.sleep(10)
-        res = midi_processes()
-        if res is not None:
-            logger.warn(f"Test sequence failed: {res}")
-            return -1
-
-        self.serial.start_serial()
-        time.sleep(0.1)
-
-        photoresistors_test()
-        plants_test()
-
-        self.serial.stop_serial()
-
-        while True:
-            led_tests()
-            print()
-            time.sleep(5)
-
-
-        logger.info("Test sequence completed successfully.")
-        return 0
 
     def __device_disconnected(self):
         logger.info("Board removed, ready for next test")
-        # self.screen.waiting_screen()
+        self.screen.set_text([f"CONNECT DEVICE", f"{self.test_count:4}"])
+        self.screen.set_color(RgbColorsEnum.BLUE)
         logger.info("Screen updated to waiting state.")
 
 

@@ -27,7 +27,7 @@ def photoresistors_test():
     no_led_photoresistors_state = get_photoresistors_state()
     if no_led_photoresistors_state == -1:
         logger.warn("Some problems with getting status")
-        return ""
+        return "GET_DATA_FAILED"
 
     logger.info(f"Photoresistor state without leds: {no_led_photoresistors_state}")
 
@@ -37,11 +37,13 @@ def photoresistors_test():
 
     if no_led_photoresistors_state == -1:
         logger.warn("Some problems with getting status")
-        return ""
+        return "GET_DATA_FAILED"
 
     logger.info(f"Photo resistors state with leds: {led_photoresistors_state}")
 
-    if no_led_photoresistors_state - led_photoresistors_state > 100:
-        logger.info("Photoresistor test complete successfully")
-    else:
+    if no_led_photoresistors_state - led_photoresistors_state < 100:
         logger.warn("Photoresistor test failed")
+        return "TEST_FAILED"
+
+    logger.info("Photoresistor test complete successfully")
+    return
