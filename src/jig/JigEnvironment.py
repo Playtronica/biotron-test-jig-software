@@ -31,7 +31,6 @@ class JigEnvironment:
         self.test_start_time = 0  # Инициализируем время старта теста
         self.execution_time = 0  # Переменная для отсчета времени выполнения теста
         self.max_test_time = variables.MAX_TEST_TIME  # Максимальное время выполнения тестов
-        self.test_count = 0  # Счетчик протестированных устройств
         self.debounce_time = 0.05  # 50 миллисекунд для защиты от дребезга
         self.debounce_check_count = 2
         self.current_pin_state = 0
@@ -73,8 +72,6 @@ class JigEnvironment:
             logger.info("USB port 1: ON")
             self.pins.usb_power_set(0, True)  # Включаем USB 1
 
-            # self.screen.turn_off_screen()
-
 
     def __main_cycle(self):
         if not self.__is_pin_status_changed():
@@ -112,34 +109,34 @@ class JigEnvironment:
     def __device_connected(self):
         logger.info("Pin state is 0, starting test sequence...")
 
-        self.screen.set_text(["FLASH"])
+        self.screen.set_text("FLASH")
         self.screen.set_color(RgbColorsEnum.YELLOW)
         try:
             self.__boot_device()
 
             if res := load_firmware_to_device() is not None:
                 logger.warn(f"Load firmware test is failed: {res}")
-                self.screen.set_text([f"ERROR -1"])
+                self.screen.set_text(f"ERROR 00")
                 self.screen.set_color(RgbColorsEnum.RED)
                 return
         except Exception as e:
             logger.error(f"Failed to boot device: {e}")
-            self.screen.set_text([f"ERROR -1"])
+            self.screen.set_text(f"ERROR 00")
             self.screen.set_color(RgbColorsEnum.RED)
             return
 
-        self.screen.set_text(["TESTING"])
+        self.screen.set_text("TESTING")
         self.screen.set_color(RgbColorsEnum.YELLOW)
         result = self.__test_process()
 
         if result != 0:
             logger.warn(f"Test sequence finished with error code: {self.error_code}")
-            self.screen.set_text([f"ERROR {result:02}"])
+            self.screen.set_text(f"ERROR {result:02}")
             self.screen.set_color(RgbColorsEnum.RED)
         else:
             logger.info("Test sequence completed successfully.")
-            self.test_count += 1
-            self.screen.set_text([f"TEST COMPLETE", f"{self.test_count:04}"])
+            self.screen.device_count += 1
+            self.screen.set_text(f"TEST COMPLETE")
             self.screen.set_color(RgbColorsEnum.GREEN)
 
     def __test_process(self):
@@ -193,7 +190,7 @@ class JigEnvironment:
 
     def __device_disconnected(self):
         logger.info("Board removed, ready for next test")
-        self.screen.set_text([f"CONNECT DEVICE", f"{self.test_count:04}"])
+        self.screen.set_text(f"CONNECT DEVICE")
         self.screen.set_color(RgbColorsEnum.BLUE)
         logger.info("Screen updated to waiting state.")
 

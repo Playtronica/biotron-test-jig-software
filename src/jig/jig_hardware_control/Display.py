@@ -15,31 +15,32 @@ class Display:
                              cols=variables.SCREEN_COLUMNS,
                              rows=variables.SCREEN_ROWS)
         self.rgb_led = RgbLed()
+        self.device_count = 0
 
     def __new__(cls, *args, **kwargs):
         if cls._instance is None:
             cls._instance = super().__new__(cls)
         return cls._instance
 
-    def set_text(self, lst_of_text):
-        if not self.__validate_text_for_screen(lst_of_text):
+    def set_text(self, text):
+        if not self.__validate_text_for_screen(text):
             logger.warning("Some problems with text")
             return False
 
         self.screen.clear()
-        for i in range(len(lst_of_text)):
-            self.screen.set_cursor(0, i)
-            self.screen.write(lst_of_text[i])
+
+        self.screen.set_cursor(0, 0)
+        self.screen.write(text)
+        self.screen.set_cursor(0, 1)
+        self.screen.write(variables.FIRMWARE_VERSION)
+        self.screen.set_cursor(variables.SCREEN_COLUMNS - 4 - 1, 1)
+        self.screen.write(f"{self.device_count:04}")
 
     def set_color(self, color):
         self.rgb_led.set_color(color)
 
-    def __validate_text_for_screen(self, lst_of_text):
-        if len(lst_of_text) > variables.SCREEN_ROWS:
-            logger.warn("To many rows")
-            return False
-
-        if max(map(len, lst_of_text)) > variables.SCREEN_COLUMNS:
+    def __validate_text_for_screen(self, text):
+        if len(text) > variables.SCREEN_COLUMNS:
             logger.warn("Text is too long")
             return False
 

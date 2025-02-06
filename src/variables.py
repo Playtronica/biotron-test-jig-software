@@ -1,6 +1,9 @@
 import os
 from pathlib import Path
 
+FIRMWARE_VERSION = 'A01'
+
+
 ROOT_PATH = Path(__file__).parent.parent
 FIRMWARE_PATH = ROOT_PATH / "firmware"
 os.makedirs(FIRMWARE_PATH, exist_ok=True)
