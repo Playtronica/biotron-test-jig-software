@@ -116,12 +116,12 @@ class JigEnvironment:
 
             if (res := load_firmware_to_device()) is not None:
                 logger.warn(f"Load firmware test is failed: {res}")
-                self.screen.set_text(f"ERROR 00")
+                self.screen.set_text(f"ERROR 01")
                 self.screen.set_color(RgbColorsEnum.RED)
                 return
         except Exception as e:
             logger.error(f"Failed to boot device: {e}")
-            self.screen.set_text(f"ERROR 00")
+            self.screen.set_text(f"ERROR 01")
             self.screen.set_color(RgbColorsEnum.RED)
             return
 
@@ -146,28 +146,28 @@ class JigEnvironment:
             time.sleep(5)
             if res := midi_processes() is not None:
                 logger.warn(f"MIDI Test is failed: {res}")
-                return 1
+                return 2
 
             self.serial.start_serial()
             time.sleep(1)
 
             if (res := photoresistors_test()) is not None:
                 logger.warn(f"Photo resistor is test failed: {res}")
-                return 2
+                return 3
 
             if (res := plants_disabled_test()) is not None:
                 logger.warn(f"Plant test is failed: {res}")
-                return 3
+                return 4
 
             if (res := plants_enabled_test()) is not None:
                 logger.warn(f"Plant test is failed: {res}")
-                return 4
+                return 5
 
             self.serial.stop_serial()
 
             if (res := led_tests()) is not None:
                 logger.warn(f"Led test is failed: {res}")
-                return 5
+                return 6
 
             logger.info("Test sequence completed successfully.")
             return 0
