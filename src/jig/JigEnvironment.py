@@ -58,8 +58,8 @@ class JigEnvironment:
         self.__device_disconnected()
 
         try:
-            # while True:
-            self.__main_cycle()
+            while True:
+                self.__main_cycle()
         except OSError as e:
             # Логируем ошибку и продолжаем выполнение программы
             logger.error(f"Error reading pin state: {e}")
@@ -74,14 +74,13 @@ class JigEnvironment:
 
 
     def __main_cycle(self):
-        # if not self.__is_pin_status_changed():
-        #     return
-        #
-        # if self.current_pin_state == 0:
-        #     self.__device_connected()
-        # elif self.current_pin_state == 1:
-        #     self.__device_disconnected()
-        self.__device_connected()
+        if not self.__is_pin_status_changed():
+            return
+
+        if self.current_pin_state == 0:
+            self.__device_connected()
+        elif self.current_pin_state == 1:
+            self.__device_disconnected()
 
     def __is_pin_status_changed(self):
         logger.debug(f"Current pin state: {self.current_pin_state}")
