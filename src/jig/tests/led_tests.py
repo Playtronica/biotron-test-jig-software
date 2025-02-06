@@ -10,22 +10,28 @@ logger = get_logger_for_file(__name__)
 adc_read = MultiplexerADCReader()
 
 
+data_test_each = {
+    (0, 0): 3.196, (0, 1): 3.196, (0, 2): 3.1725,
+    (0, 3): 2.7808333333333333, (0, 4): 3.196, (0, 5): 2.726,
+    (0, 6): 2.7965, (0, 7): 2.9296666666666664, (1, 0): 2.7886666666666664,
+    (1, 1): 2.8905, (1, 2): 0.015666666666666666, (1, 3): 2.9061666666666666,
+    (1, 4): 2.8434999999999997, (1, 5): 2.827833333333333, (1, 6): 2.7808333333333333, (1, 7): 2.726}
+
+
+
 def led_tests():
     for multiplexer_num in range(2):
         for multiplexer_channel_num in range(8):
             adc_val = adc_read.read_channel(multiplexer_num, multiplexer_channel_num)
             logger.info(f"Value of multiplexer {multiplexer_num} {multiplexer_channel_num}: {adc_val}")
 
-            if multiplexer_num == 0 and multiplexer_channel_num < 3:
-                if adc_val > variables.LED_TEST_BLUE_LEDS_MIN_REQ:
-                    logger.warn(f"Problems with blue led {multiplexer_num} {multiplexer_channel_num}: {adc_val}")
-                    return "BLUE_LED_TEST_FAILED"
-            elif multiplexer_num == 1 and multiplexer_channel_num == 2:
+            if multiplexer_num == 1 and multiplexer_channel_num == 2:
                 logger.warn("BROKEN. IGNORE")
-            else:
-                if adc_val > variables.LED_TEST_GREEN_LEDS_MIN_REQ:
-                    logger.warn(f"Problems with green led {multiplexer_num} {multiplexer_channel_num}: {adc_val}")
-                    return "GREEN_LED_TEST_FAILED"
+                continue
+
+            if adc_val < data_test_each[(multiplexer_num, multiplexer_channel_num)] - 0.05:
+                logger.warn(f"Problems with blue led {multiplexer_num} {multiplexer_channel_num}: {adc_val}")
+                return "BLUE_LED_TEST_FAILED"
 
             time.sleep(0.1)
 

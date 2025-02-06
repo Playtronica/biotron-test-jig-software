@@ -157,21 +157,21 @@ class JigEnvironment:
             self.serial.start_serial()
             time.sleep(1)
 
-            if res := photoresistors_test() is not None:
+            if (res := photoresistors_test()) is not None:
                 logger.warn(f"Photo resistor is test failed: {res}")
                 return 2
 
-            if res := plants_disabled_test() is not None:
+            if (res := plants_disabled_test()) is not None:
                 logger.warn(f"Plant test is failed: {res}")
                 return 3
 
-            if res := plants_enabled_test() is not None:
+            if (res := plants_enabled_test()) is not None:
                 logger.warn(f"Plant test is failed: {res}")
                 return 4
 
             self.serial.stop_serial()
 
-            if res := led_tests() is not None:
+            if (res := led_tests()) is not None:
                 logger.warn(f"Led test is failed: {res}")
                 return 5
 
