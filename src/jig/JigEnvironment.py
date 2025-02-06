@@ -61,7 +61,7 @@ class JigEnvironment:
             "shadowik"
         ])
 
-        self.screen.set_color(RgbColorsEnum.PURPLE)
+        self.screen.set_color(RgbColorsEnum.GREEN)
 
         try:
             # while True:
@@ -159,7 +159,9 @@ class JigEnvironment:
 
         self.serial.stop_serial()
 
-        led_tests()
+        while True:
+            led_tests()
+            time.sleep(5)
 
 
         logger.info("Test sequence completed successfully.")

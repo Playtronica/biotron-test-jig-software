@@ -82,7 +82,7 @@ class ADS1015:
         raw_value = result >> 4  # ADS1015 returns 12-bit values, so shift right by 4 bits
 
         # Log the raw ADC result in hex format
-        print(f"Raw ADC value (hex): {hex(raw_value)}")
+        # print(f"Raw ADC value (hex): {hex(raw_value)}")
 
         # Convert the raw value to voltage
         max_voltage = voltage_range.get(pga, 2.048)  # Default to 2.048V if PGA is unknown
@@ -93,7 +93,7 @@ class ADS1015:
         real_voltage = voltage * divider_coefficient
 
         # Log the real voltage before returning
-        print(f"Real voltage: {real_voltage:.3f} V (compensated for voltage divider)")
+        # print(f"Real voltage: {real_voltage:.3f} V (compensated for voltage divider)")
 
         return real_voltage
 
@@ -106,17 +106,17 @@ class ADS1015:
         try:
             # Read the value from the selected channel
             value = self.read_single_channel(channel, pga, sps)
-            print(f"Read value from channel {channel}: {value}")
+            # print(f"Read value from channel {channel}: {value}")
             
             # Check if the value falls within the range
             if min_value <= value <= max_value:
-                print(f"Value {value} is within the range {min_value}-{max_value}")
+                # print(f"Value {value} is within the range {min_value}-{max_value}")
                 return 1
             else:
-                print(f"Value {value} is outside the range {min_value}-{max_value}")
+                # print(f"Value {value} is outside the range {min_value}-{max_value}")
                 return 0
         except Exception as e:
-            print(f"Error: {e}")
+            # print(f"Error: {e}")
             return 0
 
     def read_and_check_multiple_channels(self, channels, min_value, max_value, pga=ADS1015_PGA_2_048V, sps=ADS1015_DR_1600SPS):
@@ -137,16 +137,17 @@ class ADS1015:
             try:
                 # Read the value from the selected channel
                 value = self.read_single_channel(channel, pga, sps)
-                print(f"Read value from channel {channel}: {value}")
+                # print(f"Read value from channel {channel}: {value}")
                 
                 # Check if the value falls within the range
                 if min_value <= value <= max_value:
-                    print(f"Value {value} on channel {channel} is within the range {min_value}-{max_value}")
+                    # print(f"Value {value} on channel {channel} is within the range {min_value}-{max_value}")
+                    pass
                 else:
-                    print(f"Value {value} on channel {channel} is outside the range {min_value}-{max_value}")
+                    # print(f"Value {value} on channel {channel} is outside the range {min_value}-{max_value}")
                     all_in_range = False  # Если хотя бы один канал не соответствует условиям, общий результат становится False
             except Exception as e:
-                print(f"Error reading channel {channel}: {e}")
+                # print(f"Error reading channel {channel}: {e}")
                 all_in_range = False  # В случае ошибки чтения считаем, что канал не соответствует условиям
 
         return 1 if all_in_range else 0  # Возвращаем 1 если все в пределах диапазона, иначе 0

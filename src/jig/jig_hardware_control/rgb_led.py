@@ -3,14 +3,14 @@ import enum
 import variables
 
 class RgbColorsEnum(enum.Enum):
-    NONE=(1, 1, 1)
-    RED=(0, 1, 1)
-    GREEN=(1, 0, 1)
-    BLUE=(1, 1, 0)
-    YELLOW=(0, 0, 1)
-    PURPLE=(0, 1, 0)
-    LIGHT_BLUE=(1, 0, 0)
-    WHITE=(0, 0, 0)
+    NONE = (0, 0, 0)
+    RED = (1, 0, 0)
+    GREEN = (0, 1, 0)
+    BLUE = (0, 0, 1)
+    YELLOW = (1, 1, 0)
+    PURPLE = (1, 0, 1)
+    LIGHT_BLUE = (0, 1, 1)
+    WHITE = (1, 1, 1)
 
 class RgbLed:
     _instance = None
