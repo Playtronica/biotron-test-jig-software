@@ -10,7 +10,7 @@ from jig.tests.led_tests import led_tests, check_blue_led, check_green_led
 from jig.jig_hardware_control.rgb_led import RgbColorsEnum
 
 from jig.tests.load_firmware_to_device import load_firmware_to_device
-from jig.tests.midi_processes import midi_processes, find_midi_device, close_midi_connection_from_device
+from jig.tests.midi_processes import find_midi_device, close_midi_connection_from_device
 from jig.tests.photoresistors_test import photoresistors_test
 from jig.tests.plants_check import plants_disabled_test, plants_enabled_test
 from jig.tests.serial_tests import SerialTests
