@@ -195,7 +195,7 @@ class JigEnvironment:
         self.pins.usb_power_set(1, True)
         time.sleep(1)
         self.pins.relay_set(2, 0)
-        time.sleep(5)
+        time.sleep(1)
 
     def __device_disconnected(self):
         logger.info("Board removed, ready for next test")
