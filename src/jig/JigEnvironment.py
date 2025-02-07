@@ -151,13 +151,14 @@ class JigEnvironment:
                 logger.warn(f"MIDI Test is failed: {res}")
                 return 2
 
-            if (res := check_blue_led()) is not None:
-                logger.warn(f"MIDI Test is failed: {res}")
-                return 6
+            while True:
+                if (res := check_blue_led()) is not None:
+                    logger.warn(f"MIDI Test is failed: {res}")
+                    return 6
 
-            if (res := check_green_led()) is not None:
-                logger.warn(f"MIDI Test is failed: {res}")
-                return 6
+                if (res := check_green_led()) is not None:
+                    logger.warn(f"MIDI Test is failed: {res}")
+                    return 6
 
             if (res := close_midi_connection_from_device()) is not None:
                 logger.warn(f"MIDI Test is failed: {res}")
