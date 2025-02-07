@@ -21,10 +21,6 @@ def led_tests(data):
             logger.info(f"Value of multiplexer {multiplexer_num} {multiplexer_channel_num}: {adc_val}")
             adc_val -= 0.05
 
-            if multiplexer_num == 1 and multiplexer_channel_num == 2:
-                logger.warn("BROKEN. IGNORE")
-                continue
-
             # if adc_val >= data[(multiplexer_num, multiplexer_channel_num)]:
             #     logger.warn(f"Problems with blue led {multiplexer_num} {multiplexer_channel_num}: {adc_val}")
             #     return "BLUE_LED_TEST_FAILED"
