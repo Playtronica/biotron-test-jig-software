@@ -58,8 +58,8 @@ class JigEnvironment:
         self.__device_disconnected()
 
         try:
-            # while True:
-            self.__main_cycle()
+            while True:
+                self.__main_cycle()
         except OSError as e:
             # Логируем ошибку и продолжаем выполнение программы
             logger.error(f"Error reading pin state: {e}")
@@ -74,15 +74,14 @@ class JigEnvironment:
 
 
     def __main_cycle(self):
-        # if not self.__is_pin_status_changed():
-        #     return
-        #
-        # if self.current_pin_state == 0:
-        #     self.__device_connected()
-        # elif self.current_pin_state == 1:
-        #     self.__device_disconnected()
+        if not self.__is_pin_status_changed():
+            return
 
-        self.__device_connected()
+        if self.current_pin_state == 0:
+            self.__device_connected()
+        elif self.current_pin_state == 1:
+            self.__device_disconnected()
+
 
     def __is_pin_status_changed(self):
         logger.debug(f"Current pin state: {self.current_pin_state}")
@@ -156,34 +155,39 @@ class JigEnvironment:
                 logger.warn(f"MIDI Test is failed: {res}")
                 return 2
 
-            if (res := check_green_led()) is not None:
-                logger.warn(f"MIDI Test is failed: {res}")
-                return 6
-
             if (res := check_blue_led()) is not None:
                 logger.warn(f"MIDI Test is failed: {res}")
-                return 6
+                return 3
+
+            if (res := check_green_led()) is not None:
+                logger.warn(f"MIDI Test is failed: {res}")
+                return 4
 
             if (res := close_midi_connection_from_device()) is not None:
                 logger.warn(f"MIDI Test is failed: {res}")
                 return 2
 
-            self.serial.start_serial()
+            if (res := self.serial.start_serial()) is not None:
+                logger.warn(f"Serial test is failed: {res}")
+                return 5
+
             time.sleep(1)
 
             if (res := photoresistors_test()) is not None:
                 logger.warn(f"Photo resistor is test failed: {res}")
-                return 3
+                return 6
 
             if (res := plants_disabled_test()) is not None:
                 logger.warn(f"Plant test is failed: {res}")
-                return 4
+                return 7
 
             if (res := plants_enabled_test()) is not None:
                 logger.warn(f"Plant test is failed: {res}")
-                return 5
+                return 8
 
-            self.serial.stop_serial()
+            if (res := self.serial.stop_serial()) is not None:
+                logger.warn(f"Serial test is failed: {res}")
+                return 5
 
             logger.info("Test sequence completed successfully.")
             return 0
