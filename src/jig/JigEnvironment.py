@@ -38,7 +38,6 @@ class JigEnvironment:
         self.last_pin_state = self.pins.gpio_read_pin(0)  # Начальное состояние пина
 
         # При старте программы выключаем USB 1
-        # self.pins.usb_power_set(1, False)  # Выключаем USB 1
         self.pins.relay_set(2, 0)  # TODO check gpio boots
         self.pins.relay_set(1, 0)
 
@@ -111,21 +110,21 @@ class JigEnvironment:
     def __device_connected(self):
         logger.info("Pin state is 0, starting test sequence...")
 
-        # self.screen.set_text("FLASH")
-        # self.screen.set_color(RgbColorsEnum.YELLOW)
-        # try:
-        #     self.__boot_device()
-        #
-        #     if (res := load_firmware_to_device()) is not None:
-        #         logger.warn(f"Load firmware test is failed: {res}")
-        #         self.screen.set_text(f"ERROR 01")
-        #         self.screen.set_color(RgbColorsEnum.RED)
-        #         return
-        # except Exception as e:
-        #     logger.error(f"Failed to boot device: {e}")
-        #     self.screen.set_text(f"ERROR 01")
-        #     self.screen.set_color(RgbColorsEnum.RED)
-        #     return
+        self.screen.set_text("FLASH")
+        self.screen.set_color(RgbColorsEnum.YELLOW)
+        try:
+            self.__boot_device()
+
+            if (res := load_firmware_to_device()) is not None:
+                logger.warn(f"Load firmware test is failed: {res}")
+                self.screen.set_text(f"ERROR 01")
+                self.screen.set_color(RgbColorsEnum.RED)
+                return
+        except Exception as e:
+            logger.error(f"Failed to boot device: {e}")
+            self.screen.set_text(f"ERROR 01")
+            self.screen.set_color(RgbColorsEnum.RED)
+            return
 
         self.screen.set_text("TESTING")
         self.screen.set_color(RgbColorsEnum.YELLOW)
