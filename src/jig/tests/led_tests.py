@@ -31,6 +31,7 @@ def led_tests(data):
 
 
 def check_blue_led():
+    logger.info("Checking blue LED")
     send_test_blue_sysex_messages_to_midi_device()
     data = {
         (0, 0): 3.196, (0, 1): 3.196, (0, 2): 3.1725,
@@ -43,6 +44,7 @@ def check_blue_led():
 
 
 def check_green_led():
+    logger.info("Checking green LED")
     send_test_green_sysex_messages_to_midi_device()
     data = {
         (0, 0): 3.196, (0, 1): 3.196, (0, 2): 3.1725,
