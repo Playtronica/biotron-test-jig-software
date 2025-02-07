@@ -10,7 +10,8 @@ from jig.tests.led_tests import led_tests, check_blue_led, check_green_led
 from jig.jig_hardware_control.rgb_led import RgbColorsEnum
 
 from jig.tests.load_firmware_to_device import load_firmware_to_device
-from jig.tests.midi_processes import find_midi_device, close_midi_connection_from_device
+from jig.tests.midi_processes import find_midi_device, close_midi_connection_from_device, \
+    send_enable_logs_sysex_messages_to_midi_device
 from jig.tests.photoresistors_test import photoresistors_test
 from jig.tests.plants_check import plants_disabled_test, plants_enabled_test
 from jig.tests.serial_tests import SerialTests
@@ -151,11 +152,15 @@ class JigEnvironment:
                 logger.warn(f"MIDI Test is failed: {res}")
                 return 2
 
-            if (res := check_blue_led()) is not None:
+            if (res := send_enable_logs_sysex_messages_to_midi_device()) is not None:
+                logger.warn(f"MIDI Test is failed: {res}")
+                return 2
+
+            if (res := check_green_led()) is not None:
                 logger.warn(f"MIDI Test is failed: {res}")
                 return 6
 
-            if (res := check_green_led()) is not None:
+            if (res := check_blue_led()) is not None:
                 logger.warn(f"MIDI Test is failed: {res}")
                 return 6
 
