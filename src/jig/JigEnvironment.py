@@ -126,6 +126,8 @@ class JigEnvironment:
             self.screen.set_color(RgbColorsEnum.RED)
             return
 
+        time.sleep(5)
+
         self.screen.set_text("TESTING")
         self.screen.set_color(RgbColorsEnum.YELLOW)
 
