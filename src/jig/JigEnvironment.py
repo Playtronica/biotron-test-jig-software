@@ -6,11 +6,11 @@ from base_logger import get_logger_for_file
 
 from jig.jig_hardware_control.pin_controller import PinController
 from jig.jig_hardware_control.Display import Display
-from jig.tests.led_tests import led_tests
+from jig.tests.led_tests import led_tests, check_blue_led, check_green_led
 from jig.jig_hardware_control.rgb_led import RgbColorsEnum
 
 from jig.tests.load_firmware_to_device import load_firmware_to_device
-from jig.tests.midi_processes import midi_processes
+from jig.tests.midi_processes import midi_processes, find_midi_device, close_midi_connection_from_device
 from jig.tests.photoresistors_test import photoresistors_test
 from jig.tests.plants_check import plants_disabled_test, plants_enabled_test
 from jig.tests.serial_tests import SerialTests
@@ -58,8 +58,8 @@ class JigEnvironment:
         self.__device_disconnected()
 
         try:
-            while True:
-                self.__main_cycle()
+            # while True:
+            self.__main_cycle()
         except OSError as e:
             # Логируем ошибку и продолжаем выполнение программы
             logger.error(f"Error reading pin state: {e}")
@@ -74,13 +74,15 @@ class JigEnvironment:
 
 
     def __main_cycle(self):
-        if not self.__is_pin_status_changed():
-            return
+        # if not self.__is_pin_status_changed():
+        #     return
+        #
+        # if self.current_pin_state == 0:
+        #     self.__device_connected()
+        # elif self.current_pin_state == 1:
+        #     self.__device_disconnected()
 
-        if self.current_pin_state == 0:
-            self.__device_connected()
-        elif self.current_pin_state == 1:
-            self.__device_disconnected()
+        self.__device_connected()
 
     def __is_pin_status_changed(self):
         logger.debug(f"Current pin state: {self.current_pin_state}")
@@ -109,24 +111,25 @@ class JigEnvironment:
     def __device_connected(self):
         logger.info("Pin state is 0, starting test sequence...")
 
-        self.screen.set_text("FLASH")
-        self.screen.set_color(RgbColorsEnum.YELLOW)
-        try:
-            self.__boot_device()
-
-            if (res := load_firmware_to_device()) is not None:
-                logger.warn(f"Load firmware test is failed: {res}")
-                self.screen.set_text(f"ERROR 01")
-                self.screen.set_color(RgbColorsEnum.RED)
-                return
-        except Exception as e:
-            logger.error(f"Failed to boot device: {e}")
-            self.screen.set_text(f"ERROR 01")
-            self.screen.set_color(RgbColorsEnum.RED)
-            return
+        # self.screen.set_text("FLASH")
+        # self.screen.set_color(RgbColorsEnum.YELLOW)
+        # try:
+        #     self.__boot_device()
+        #
+        #     if (res := load_firmware_to_device()) is not None:
+        #         logger.warn(f"Load firmware test is failed: {res}")
+        #         self.screen.set_text(f"ERROR 01")
+        #         self.screen.set_color(RgbColorsEnum.RED)
+        #         return
+        # except Exception as e:
+        #     logger.error(f"Failed to boot device: {e}")
+        #     self.screen.set_text(f"ERROR 01")
+        #     self.screen.set_color(RgbColorsEnum.RED)
+        #     return
 
         self.screen.set_text("TESTING")
         self.screen.set_color(RgbColorsEnum.YELLOW)
+
         result = self.__test_process()
 
         if result != 0:
@@ -143,8 +146,20 @@ class JigEnvironment:
         try:
             logger.info("Test sequence started.")
 
-            time.sleep(5)
-            if res := midi_processes() is not None:
+
+            if (res := find_midi_device()) is not None:
+                logger.warn(f"MIDI Test is failed: {res}")
+                return 2
+
+            if (res := check_blue_led()) is not None:
+                logger.warn(f"MIDI Test is failed: {res}")
+                return 6
+
+            if (res := check_green_led()) is not None:
+                logger.warn(f"MIDI Test is failed: {res}")
+                return 6
+
+            if (res := close_midi_connection_from_device()) is not None:
                 logger.warn(f"MIDI Test is failed: {res}")
                 return 2
 
@@ -165,10 +180,6 @@ class JigEnvironment:
 
             self.serial.stop_serial()
 
-            if (res := led_tests()) is not None:
-                logger.warn(f"Led test is failed: {res}")
-                return 6
-
             logger.info("Test sequence completed successfully.")
             return 0
         except Exception as e:
@@ -184,7 +195,7 @@ class JigEnvironment:
         self.pins.usb_power_set(1, True)
         time.sleep(1)
         self.pins.relay_set(2, 0)
-        time.sleep(1)
+        time.sleep(5)
 
     def __device_disconnected(self):
         logger.info("Board removed, ready for next test")
