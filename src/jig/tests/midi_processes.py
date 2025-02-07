@@ -10,7 +10,7 @@ biotron_midi_output = None
 
 sysex_test_green_mode = mido.Message.from_bytes([240, 11, 20, 13, 0, 247])
 sysex_test_blue_mode = mido.Message.from_bytes([240, 11, 20, 13, 1, 247])
-sysex_enable_logs = mido.Message.from_bytes([240, 11, 20, 13, 4, 247])
+sysex_enable_logs = mido.Message.from_bytes([240, 11, 20, 13, 3, 247])
 
 def find_midi_device():
     try:
