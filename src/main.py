@@ -1,31 +1,39 @@
-from base_logger import initialize_logger, get_logger_child
-import subprocess
-import os
-
 import variables
+
+from base_logger import get_logger_for_file
+import subprocess
+
 from firmware_updater import update_firmware_files
+from jig.JigEnvironment import JigEnvironment
+from jig.tests.load_firmware_to_device import load_firmware_to_device
 
-
-def create_initial_structure():
-    os.makedirs(variables.FIRMWARE_PATH, exist_ok=True)
-    os.makedirs(variables.LOGGER_PATH, exist_ok=True)
+logger = get_logger_for_file(__name__)
 
 
 def check_internet_connection():
     try:
         subprocess.check_output(["ping", "-c", "1", "www.baidu.com"])
-        main_logger.info("Internet connection established")
+        logger.info("Internet connection established")
         return True
     except subprocess.CalledProcessError:
-        main_logger.error("Internet connection error")
+        logger.error("Internet connection error")
         return False
 
 
-create_initial_structure()
-initialize_logger()
-main_logger = get_logger_child("main")
+def initial_part():
+    res = check_internet_connection()
+    if res:
+        update_firmware_files('Playtronica', 'biotron-firmware')
+    else:
+        logger.error("Internet connection error")
+
 
 
 if __name__ == '__main__':
-    check_internet_connection()
-    update_firmware_files('Playtronica', 'biotron-firmware')
+    initial_part()
+
+    jig = JigEnvironment()
+    jig.init_jig_main_cycle()
+
+
+

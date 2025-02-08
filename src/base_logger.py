@@ -1,21 +1,21 @@
 import logging
-from pathlib import Path
+import time
+from variables import LOGGER_PATH
 
-ROOT_PATH = Path(__file__).parent.parent
-LOGGER_PATH = ROOT_PATH / "logs"
+base_logger = logging.getLogger("biotron_test_jig")
 
-base_logger = logging.getLogger(__name__)
+base_logger.setLevel(logging.INFO)
 
-
-def initialize_logger():
-    base_logger.setLevel(logging.INFO)
-
-    handler = logging.FileHandler(LOGGER_PATH / f'{__name__}.log', mode="w+")
-    formatter = logging.Formatter("%(name)s %(asctime)s %(levelname)s %(message)s")
-
-    handler.setFormatter(formatter)
-    base_logger.addHandler(handler)
+name_of_file = time.strftime("%Y.%m.%d.%H.%M.%S")
+file_handler = logging.FileHandler(LOGGER_PATH / f'{name_of_file}.log', mode="w+")
+# stream_handler = logging.StreamHandler()
+formatter = logging.Formatter("%(name)s %(asctime)s %(levelname)s %(message)s")
 
 
-def get_logger_child(name):
+file_handler.setFormatter(formatter)
+# stream_handler.setFormatter(formatter)
+base_logger.addHandler(file_handler)
+# base_logger.addHandler(stream_handler)
+
+def get_logger_for_file(name):
     return base_logger.getChild(name)

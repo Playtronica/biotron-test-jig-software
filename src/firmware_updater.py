@@ -1,15 +1,13 @@
-from base_logger import get_logger_child
+from base_logger import get_logger_for_file
 import variables
 import requests
 
-firmware_logger = get_logger_child('firmware_updater')
+firmware_logger = get_logger_for_file(__name__)
 
 headers = {
     "Accept": "application/vnd.github+json",
     "X-GitHub-Api-Version": "2022-11-28",
-    # "Authorization": f"Bearer {variables.GITHUB_TOKEN}"
 }
-
 
 def __get_last_release(owner, repo):
     url = f"https://api.github.com/repos/{owner}/{repo}/releases/latest"
