@@ -14,7 +14,7 @@ os.makedirs(LOGGER_PATH, exist_ok=True)
 MAX_TEST_TIME = 70
 
 MOUNT_POINT = Path("/media/usb")
-
+FIRMWARE_PATTERN = r"biotron-firmware_v1.6.3.uf2"
 
 SCREEN_ADDRESS = 0x27
 SCREEN_ROWS = 2
