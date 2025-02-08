@@ -1,6 +1,6 @@
 import os
 import shutil
-import psutil
+import re
 import subprocess
 
 import variables
@@ -19,7 +19,9 @@ def get_firmware_file():
 
     firmware_file = None
 
-    files = [f for f in os.listdir(variables.FIRMWARE_PATH) if os.path.isfile(os.path.join(variables.FIRMWARE_PATH, f))]
+    files = [f for f in os.listdir(variables.FIRMWARE_PATH)
+             if os.path.isfile(os.path.join(variables.FIRMWARE_PATH, f)) and re.match(variables.FIRMWARE_PATTERN, f)
+    ]
     if not files:
         logger.warn("Don't see any firmware files")
         return None
@@ -33,6 +35,7 @@ def get_firmware_file():
     firmware_file = variables.FIRMWARE_PATH / file
     logger.info(f"Firmware file has been found. {file}")
     return firmware_file
+
 
 def mount_usb_drive(drive_name):
     os.makedirs(variables.MOUNT_POINT, exist_ok=True)

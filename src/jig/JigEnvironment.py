@@ -6,11 +6,12 @@ from base_logger import get_logger_for_file
 
 from jig.jig_hardware_control.pin_controller import PinController
 from jig.jig_hardware_control.Display import Display
-from jig.tests.led_tests import led_tests
+from jig.tests.led_tests import led_tests, check_blue_led, check_green_led
 from jig.jig_hardware_control.rgb_led import RgbColorsEnum
 
 from jig.tests.load_firmware_to_device import load_firmware_to_device
-from jig.tests.midi_processes import midi_processes
+from jig.tests.midi_processes import find_midi_device, close_midi_connection_from_device, \
+    send_enable_logs_sysex_messages_to_midi_device
 from jig.tests.photoresistors_test import photoresistors_test
 from jig.tests.plants_check import plants_disabled_test, plants_enabled_test
 from jig.tests.serial_tests import SerialTests
@@ -38,7 +39,6 @@ class JigEnvironment:
         self.last_pin_state = self.pins.gpio_read_pin(0)  # Начальное состояние пина
 
         # При старте программы выключаем USB 1
-        # self.pins.usb_power_set(1, False)  # Выключаем USB 1
         self.pins.relay_set(2, 0)  # TODO check gpio boots
         self.pins.relay_set(1, 0)
 
@@ -81,6 +81,7 @@ class JigEnvironment:
             self.__device_connected()
         elif self.current_pin_state == 1:
             self.__device_disconnected()
+
 
     def __is_pin_status_changed(self):
         logger.debug(f"Current pin state: {self.current_pin_state}")
@@ -125,8 +126,11 @@ class JigEnvironment:
             self.screen.set_color(RgbColorsEnum.RED)
             return
 
+        time.sleep(5)
+
         self.screen.set_text("TESTING")
         self.screen.set_color(RgbColorsEnum.YELLOW)
+
         result = self.__test_process()
 
         if result != 0:
@@ -143,31 +147,47 @@ class JigEnvironment:
         try:
             logger.info("Test sequence started.")
 
-            time.sleep(5)
-            if res := midi_processes() is not None:
+            if (res := find_midi_device()) is not None:
                 logger.warn(f"MIDI Test is failed: {res}")
                 return 2
 
-            self.serial.start_serial()
+            if (res := send_enable_logs_sysex_messages_to_midi_device()) is not None:
+                logger.warn(f"MIDI Test is failed: {res}")
+                return 2
+
+            if (res := check_blue_led()) is not None:
+                logger.warn(f"MIDI Test is failed: {res}")
+                return 3
+
+            if (res := check_green_led()) is not None:
+                logger.warn(f"MIDI Test is failed: {res}")
+                return 4
+
+            if (res := close_midi_connection_from_device()) is not None:
+                logger.warn(f"MIDI Test is failed: {res}")
+                return 2
+
+            if (res := self.serial.start_serial()) is not None:
+                logger.warn(f"Serial test is failed: {res}")
+                return 5
+
             time.sleep(1)
 
             if (res := photoresistors_test()) is not None:
                 logger.warn(f"Photo resistor is test failed: {res}")
-                return 3
+                return 6
 
             if (res := plants_disabled_test()) is not None:
                 logger.warn(f"Plant test is failed: {res}")
-                return 4
+                return 7
 
             if (res := plants_enabled_test()) is not None:
                 logger.warn(f"Plant test is failed: {res}")
+                return 8
+
+            if (res := self.serial.stop_serial()) is not None:
+                logger.warn(f"Serial test is failed: {res}")
                 return 5
-
-            self.serial.stop_serial()
-
-            if (res := led_tests()) is not None:
-                logger.warn(f"Led test is failed: {res}")
-                return 6
 
             logger.info("Test sequence completed successfully.")
             return 0

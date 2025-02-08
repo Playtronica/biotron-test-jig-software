@@ -23,7 +23,7 @@ class SerialTests:
     def start_serial(self):
         if self.is_enabled:
             logger.warn("Serial thread has already been enabled")
-            return
+            return "SERIAL ALREADY ENABLED"
         self.is_enabled = True
         self.serial = serial.Serial("/dev/ttyACM0", 115200, timeout=1)
         self.thread = Thread(target=self.__process)
@@ -33,7 +33,7 @@ class SerialTests:
     def stop_serial(self):
         if not self.is_enabled:
             logger.warn("Serial thread has not already been enabled")
-            return
+            return "SERIAL DISABLED"
         self.is_enabled = False
         self.thread.join()
         self.serial.close()

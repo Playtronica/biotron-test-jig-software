@@ -22,10 +22,11 @@ def check_internet_connection():
 
 def initial_part():
     res = check_internet_connection()
-    if not res:
+    if res:
+        update_firmware_files('Playtronica', 'biotron-firmware')
+    else:
         logger.error("Internet connection error")
-        exit(1) # TODO
-    update_firmware_files('Playtronica', 'biotron-firmware')
+
 
 
 if __name__ == '__main__':
