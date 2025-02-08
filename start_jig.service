@@ -5,7 +5,7 @@ After=update_jig_and_env.service
 
 [Service]
 Type=simple
-ExecStart=/root/biotron-test-jig-software/start_jig.sh
+ExecStart=/bin/bash /root/biotron-test-jig-software/start_jig.sh
 WorkingDirectory=/root/biotron-test-jig-software
 Restart=always
 RestartSec=5

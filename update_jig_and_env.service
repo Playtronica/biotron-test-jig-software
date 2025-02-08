@@ -5,7 +5,7 @@ After=network.target
 [Service]
 Type=oneshot
 WorkingDirectory=/root/biotron-test-jig-software
-ExecStart=/root/biotron-test-jig-software/update_jig_and_env.sh
+ExecStart=/bin/bash /root/biotron-test-jig-software/update_jig_and_env.sh
 RemainAfterExit=yes
 
 [Install]
