@@ -1,7 +1,7 @@
 [Unit]
 Description=Python Script Runner
 After=network.target
-After=setup.service
+After=update_jig_and_env.service
 
 [Service]
 Type=simple
