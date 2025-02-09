@@ -116,6 +116,8 @@ class JigEnvironment:
             logger.warn(f"Test sequence finished with error code: {self.error_code}")
             self.screen.set_text(f"ERROR {result:02}")
             self.screen.set_color(RgbColorsEnum.RED)
+            if result == 10:
+                time.sleep(3)
         else:
             logger.info("Test sequence completed successfully.")
             self.screen.device_count += 1
