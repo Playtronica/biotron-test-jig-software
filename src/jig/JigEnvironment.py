@@ -119,13 +119,19 @@ class JigEnvironment:
             logger.warn(f"Test sequence finished with error code: {self.error_code}")
             self.screen.set_text(f"ERROR {result:02}")
             self.screen.set_color(RgbColorsEnum.RED)
-            if result == 10:
-                time.sleep(3)
         else:
             logger.info("Test sequence completed successfully.")
             self.screen.device_count += 1
             self.screen.set_text(f"TEST COMPLETE")
             self.screen.set_color(RgbColorsEnum.GREEN)
+
+
+        start_time = time.time()
+        while True:
+            elapsed_time = time.time() - start_time
+            if elapsed_time > 3 and self.pins.gpio_read_pin(0) == 1:
+                break
+
 
     def __launch_test_process(self):
         state = [0]
