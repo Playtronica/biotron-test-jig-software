@@ -110,7 +110,7 @@ class JigEnvironment:
     def __device_connected(self):
         logger.info("Pin state is 0, starting test sequence...")
 
-        result = self.__test_process()
+        result = self.__launch_test_process()
 
         if result != 0:
             logger.warn(f"Test sequence finished with error code: {self.error_code}")
