@@ -112,6 +112,9 @@ class JigEnvironment:
 
         result = self.__launch_test_process()
 
+        close_midi_connection_from_device()
+        self.serial.stop_serial()
+
         if result != 0:
             logger.warn(f"Test sequence finished with error code: {self.error_code}")
             self.screen.set_text(f"ERROR {result:02}")
@@ -146,6 +149,8 @@ class JigEnvironment:
             if not thread.is_alive():
                 logger.info("Test cycle completed.")
                 return state[0]
+
+
 
 
     def __test_process(self, stop_event: threading.Event, state):

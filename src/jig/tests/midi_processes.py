@@ -35,7 +35,7 @@ def close_midi_connection_from_device():
     try:
         global biotron_midi_output
         if not biotron_midi_output:
-            logger.info("Device is not connected")
+            logger.info("Device is not enabled")
             return "Device Not Found"
 
         biotron_midi_output.close()
