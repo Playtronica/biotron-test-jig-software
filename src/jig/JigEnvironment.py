@@ -1,12 +1,11 @@
-# TODO Was renamed from TestSystem, cut from whole code, and was made like singleton
 import time
 
 import variables
 from base_logger import get_logger_for_file
+import threading
 
 from jig.jig_hardware_control.pin_controller import PinController
 from jig.jig_hardware_control.Display import Display
-from jig.tests.led_tests import led_tests, check_blue_led, check_green_led
 from jig.jig_hardware_control.rgb_led import RgbColorsEnum
 
 from jig.tests.load_firmware_to_device import load_firmware_to_device
@@ -15,6 +14,7 @@ from jig.tests.midi_processes import find_midi_device, close_midi_connection_fro
 from jig.tests.photoresistors_test import photoresistors_test
 from jig.tests.plants_check import plants_disabled_test, plants_enabled_test
 from jig.tests.serial_tests import SerialTests
+from jig.tests.led_tests import check_blue_led, check_green_led
 
 
 logger = get_logger_for_file(__name__)
@@ -110,27 +110,6 @@ class JigEnvironment:
     def __device_connected(self):
         logger.info("Pin state is 0, starting test sequence...")
 
-        self.screen.set_text("FLASH")
-        self.screen.set_color(RgbColorsEnum.YELLOW)
-        try:
-            self.__boot_device()
-
-            if (res := load_firmware_to_device()) is not None:
-                logger.warn(f"Load firmware test is failed: {res}")
-                self.screen.set_text(f"ERROR 01")
-                self.screen.set_color(RgbColorsEnum.RED)
-                return
-        except Exception as e:
-            logger.error(f"Failed to boot device: {e}")
-            self.screen.set_text(f"ERROR 01")
-            self.screen.set_color(RgbColorsEnum.RED)
-            return
-
-        time.sleep(5)
-
-        self.screen.set_text("TESTING")
-        self.screen.set_color(RgbColorsEnum.YELLOW)
-
         result = self.__test_process()
 
         if result != 0:
@@ -143,57 +122,108 @@ class JigEnvironment:
             self.screen.set_text(f"TEST COMPLETE")
             self.screen.set_color(RgbColorsEnum.GREEN)
 
-    def __test_process(self):
+    def __launch_test_process(self):
+        state = [0]
+        stop_event = threading.Event()
+        thread = threading.Thread(target=self.__test_process, args=(stop_event, state, ))
+
+        thread.start()
+        start_time = time.time()
+        while True:
+            elapsed_time = time.time() - start_time
+            if elapsed_time > variables.MAX_TEST_TIME:
+                logger.warn("Test cycle is stuck.")
+                stop_event.set()
+                return 11
+
+            if self.pins.gpio_read_pin(0) == 1:
+                logger.warn("The lever was unset.")
+                stop_event.set()
+                return 10
+
+            if not thread.is_alive():
+                logger.info("Test cycle completed.")
+                return state[0]
+
+
+    def __test_process(self, stop_event: threading.Event, state):
         try:
+            self.screen.set_text("FLASH")
+            self.screen.set_color(RgbColorsEnum.YELLOW)
+
+            self.__boot_device()
+
+            if (res := load_firmware_to_device()) is not None or stop_event.is_set():
+                logger.warn(f"Load firmware test is failed: {res}")
+                state[0] = 1
+                return
+
+            time.sleep(5)
+
+            self.screen.set_text("TESTING")
+            self.screen.set_color(RgbColorsEnum.YELLOW)
+
             logger.info("Test sequence started.")
 
-            if (res := find_midi_device()) is not None:
+            if (res := find_midi_device()) is not None or stop_event.is_set():
                 logger.warn(f"MIDI Test is failed: {res}")
-                return 2
+                state[0] = 2
+                return
 
-            if (res := send_enable_logs_sysex_messages_to_midi_device()) is not None:
+            if (res := send_enable_logs_sysex_messages_to_midi_device()) is not None or stop_event.is_set():
                 logger.warn(f"MIDI Test is failed: {res}")
-                return 2
+                state[0] = 2
+                return
 
-            if (res := check_blue_led()) is not None:
+            if (res := check_blue_led()) is not None or stop_event.is_set():
                 logger.warn(f"MIDI Test is failed: {res}")
-                return 3
+                state[0] = 3
+                return
 
-            if (res := check_green_led()) is not None:
+            if (res := check_green_led()) is not None or stop_event.is_set():
                 logger.warn(f"MIDI Test is failed: {res}")
-                return 4
+                state[0] = 4
+                return
 
-            if (res := close_midi_connection_from_device()) is not None:
+            if (res := close_midi_connection_from_device()) is not None or stop_event.is_set():
                 logger.warn(f"MIDI Test is failed: {res}")
-                return 2
+                state[0] = 2
+                return
 
-            if (res := self.serial.start_serial()) is not None:
+            if (res := self.serial.start_serial()) is not None or stop_event.is_set():
                 logger.warn(f"Serial test is failed: {res}")
-                return 5
+                state[0] = 5
+                return
 
             time.sleep(1)
 
-            if (res := photoresistors_test()) is not None:
+            if (res := photoresistors_test()) is not None or stop_event.is_set():
                 logger.warn(f"Photo resistor is test failed: {res}")
-                return 6
+                state[0] = 6
+                return
 
-            if (res := plants_disabled_test()) is not None:
+            if (res := plants_disabled_test()) is not None or stop_event.is_set():
                 logger.warn(f"Plant test is failed: {res}")
-                return 7
+                state[0] = 7
+                return
 
-            if (res := plants_enabled_test()) is not None:
+            if (res := plants_enabled_test()) is not None or stop_event.is_set():
                 logger.warn(f"Plant test is failed: {res}")
-                return 8
+                state[0] = 8
+                return
 
-            if (res := self.serial.stop_serial()) is not None:
+            if (res := self.serial.stop_serial()) is not None or stop_event.is_set():
                 logger.warn(f"Serial test is failed: {res}")
-                return 5
+                state[0] = 5
+                return
 
             logger.info("Test sequence completed successfully.")
-            return 0
+            state[0] = 0
+            return
         except Exception as e:
             logger.error(f"Test sequence failed for unknown reason: {e}")
-            return -1
+            state[0] = -1
+            return
 
     def __boot_device(self):
         logger.info(f"Boot device")
