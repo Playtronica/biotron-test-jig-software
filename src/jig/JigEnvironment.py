@@ -110,7 +110,6 @@ class JigEnvironment:
         return True
 
     def __device_connected(self):
-        self.pins.usb_power_set(1, True)
         logger.info("Pin state is 0, starting test sequence...")
 
         result = self.__launch_test_process()
