@@ -40,6 +40,7 @@ class JigEnvironment:
         self.last_pin_state = self.pins.gpio_read_pin(0)  # Начальное состояние пина
 
         # При старте программы выключаем USB 1
+        self.pins.usb_power_set(1, False)
         self.pins.relay_set(2, 0)  # TODO check gpio boots
         self.pins.relay_set(1, 0)
 
@@ -109,12 +110,15 @@ class JigEnvironment:
         return True
 
     def __device_connected(self):
+        self.pins.usb_power_set(1, True)
         logger.info("Pin state is 0, starting test sequence...")
 
         result = self.__launch_test_process()
 
         close_midi_connection_from_device()
         self.serial.stop_serial()
+
+        self.pins.usb_power_set(1, False)
 
         if result != 0:
             logger.warn(f"Test sequence finished with error code: {self.error_code}")
@@ -132,6 +136,8 @@ class JigEnvironment:
             elapsed_time = time.time() - start_time
             if elapsed_time > 3 and self.pins.gpio_read_pin(0) == 1:
                 break
+
+
 
 
     def __launch_test_process(self):
@@ -165,7 +171,7 @@ class JigEnvironment:
     def __test_process(self, state):
         try:
             self.screen.set_text("FLASH")
-            self.screen.set_color(RgbColorsEnum.YELLOW)
+            self.screen.set_color(RgbColorsEnum.PURPLE)
 
             self.__boot_device()
 
@@ -177,7 +183,7 @@ class JigEnvironment:
             time.sleep(5)
 
             self.screen.set_text("TESTING")
-            self.screen.set_color(RgbColorsEnum.YELLOW)
+            self.screen.set_color(RgbColorsEnum.PURPLE)
 
             logger.info("Test sequence started.")
 
