@@ -145,12 +145,12 @@ class JigEnvironment:
             if elapsed_time > variables.MAX_TEST_TIME:
                 logger.warn("Test cycle is stuck.")
                 stop_event.set()
-                return 11
+                return 10
 
             if self.pins.gpio_read_pin(0) == 1:
                 logger.warn("The lever was unset.")
                 stop_event.set()
-                return 10
+                return 9
 
             if not thread.is_alive():
                 logger.info("Test cycle completed.")
