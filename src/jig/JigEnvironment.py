@@ -255,7 +255,7 @@ class JigEnvironment:
     def __device_disconnected(self):
         logger.info("Board removed, ready for next test")
         self.screen.set_text(f"CONNECT DEVICE")
-        self.screen.set_color(RgbColorsEnum.BLUE)
+        self.screen.set_color(RgbColorsEnum.PURPLE)
         logger.info("Screen updated to waiting state.")
 
 

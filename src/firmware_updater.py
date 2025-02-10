@@ -1,3 +1,5 @@
+import os
+
 from base_logger import get_logger_for_file
 import variables
 import requests
@@ -41,6 +43,10 @@ def __get_last_release(owner, repo):
 
 
 def update_firmware_files(owner, repo):
+    for filename in os.listdir(variables.FIRMWARE_PATH):
+        file_path = os.path.join(variables.FIRMWARE_PATH, filename)
+        os.remove(file_path)
+
     assets = __get_last_release(owner, repo)["assets"]
 
     headers_download = headers.copy()
