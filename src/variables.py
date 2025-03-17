@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 
-FIRMWARE_VERSION = 'A01'
+FIRMWARE_VERSION = 'A02'
 
 
 ROOT_PATH = Path(__file__).parent.parent
