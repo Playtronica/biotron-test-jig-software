@@ -1,8 +1,8 @@
 import os
 from pathlib import Path
 
-FIRMWARE_VERSION = 'A01'
-
+JIG_FIRMWARE_VERSION = 'A02'
+BIOTRON_FIRMWARE_VERSION = "0.00.00"
 
 ROOT_PATH = Path(__file__).parent.parent
 FIRMWARE_PATH = ROOT_PATH / "firmware"

@@ -1,3 +1,5 @@
+import re
+
 import variables
 
 from base_logger import get_logger_for_file
@@ -27,10 +29,35 @@ def initial_part():
     else:
         logger.error("Internet connection error")
 
+    # TODO Was written without device in hands, rewrite when is possible
+    import os
+    files = [f for f in os.listdir(variables.FIRMWARE_PATH) if os.path.isfile(os.path.join(variables.FIRMWARE_PATH, f))
+             and re.match(variables.FIRMWARE_PATTERN, f)]
+    if not files:
+        logger.warn("Don't see any firmware files")
+        return None
+
+    files.sort()
+    file = files[-1]
+    if not file.endswith(".uf2"):
+        logger.warn(f"File from firmware dir is not firmware. {file}")
+        return None
+
+    version_str = file.split('_v')[-1].split('.uf2')[0]
+
+    major, minor, patch = version_str.split('.')
+
+    custom_major = major[-1]
+    custom_minor = minor.zfill(2) if len(minor) < 2 else minor[-2:]
+    custom_patch = patch.zfill(2) if len(patch) < 2 else patch[-2:]
+
+    custom_version = f"{custom_major}.{custom_minor}.{custom_patch}"
+    variables.BIOTRON_FIRMWARE_VERSION = custom_version
 
 
 if __name__ == '__main__':
     initial_part()
+    print(variables.BIOTRON_FIRMWARE_VERSION)
 
     jig = JigEnvironment()
     jig.init_jig_main_cycle()

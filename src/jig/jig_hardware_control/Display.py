@@ -32,8 +32,10 @@ class Display:
         self.screen.set_cursor(0, 0)
         self.screen.write(text)
         self.screen.set_cursor(0, 1)
-        self.screen.write(variables.FIRMWARE_VERSION)
-        self.screen.set_cursor(variables.SCREEN_COLUMNS - 4 - 1, 1)
+        self.screen.write(variables.JIG_FIRMWARE_VERSION)
+        self.screen.set_cursor(4, 1)
+        self.screen.write(variables.BIOTRON_FIRMWARE_VERSION)
+        self.screen.set_cursor(variables.SCREEN_COLUMNS - 4, 1)
         self.screen.write(f"{self.device_count:04}")
 
     def set_color(self, color):

@@ -47,7 +47,6 @@ class JigEnvironment:
         logger.info("Screen updated to waiting state.")
 
 
-
     def __new__(cls, *args, **kwargs):
         if cls._instance is None:
             cls._instance = super().__new__(cls)
@@ -74,7 +73,6 @@ class JigEnvironment:
             logger.info("USB port 1: ON")
             self.pins.usb_power_set(0, True)  # Включаем USB 1
 
-
     def __main_cycle(self):
         if not self.__is_pin_status_changed():
             return
@@ -83,7 +81,6 @@ class JigEnvironment:
             self.__device_connected()
         elif self.current_pin_state == 1:
             self.__device_disconnected()
-
 
     def __is_pin_status_changed(self):
         logger.debug(f"Current pin state: {self.current_pin_state}")
@@ -136,9 +133,6 @@ class JigEnvironment:
             if elapsed_time > 3 and self.pins.gpio_read_pin(0) == 1:
                 break
 
-
-
-
     def __launch_test_process(self):
         state = [0]
         self.stop_event = False
@@ -163,9 +157,6 @@ class JigEnvironment:
             if not thread.is_alive():
                 logger.info("Test cycle completed.")
                 return state[0]
-
-
-
 
     def __test_process(self, state):
         try:
