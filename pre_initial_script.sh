@@ -11,7 +11,7 @@ read -r -n 1 -p "Please enter this public ssh key to github repository. After pr
 
 sudo apt update -y
 sudo apt upgrade -y
-sudo apt install -y git python3-pip
+sudo apt install -y git python3-pip libjack-jackd2-dev
 
 git clone ${REPO_SSH}
 
