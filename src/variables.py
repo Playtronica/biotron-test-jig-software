@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 
-JIG_FIRMWARE_VERSION = 'A03'
+JIG_FIRMWARE_VERSION = 'A04'
 BIOTRON_FIRMWARE_VERSION = "0.00.00"
 
 
